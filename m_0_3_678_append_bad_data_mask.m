@@ -4,10 +4,17 @@
 % zeros these sigma values.
 %
 % append a variable called 'mask'
+%
+% chenzhe, revised, 2017-09-14
+% (1) This code creates and appends to your data a variable called 'mask'
+% that is the same size as the 'sigma' matrix, using '1' to indicate 'good'
+% data.  This mask can be used later for various purposes. 
+% (2) It also save 'mask' to a file called 'SigmaMask.mat'
+% (3) You can select multiple DIC files of the same region.
 
 %% select files
 
-[f,p] = uigetfile('D:\Marissa_test_20170430_FlashDriveData\ts5Al_02_all images_sorted FOV _non_incremental_ref_e1\','Select .mat fileS of the same FOV','multiselect','on');
+[f,p] = uigetfile('D:\Marissa_test_20170430\','Select .mat fileS of the same FOV','multiselect','on');
 if ~iscell(f)
     f = cellstr(f);
 end

@@ -5,27 +5,39 @@
 % chenzhe, 2017-04-05
 % chenzhe, 2017-04-10 update/organize
 % chenzhe, 2017-04-26 sequence format
+% 
+% chenzhe, add note, 2017-09-15
+% (1) The use of this code is deprecated. 
+% (2) Historically the image names from Marissa's iFast code did not obey a
+% common format.
+% (3) Initially, images are stored in a parent folder.  Each subfolder
+% contains all images of the same elongation.
+% (4) This code moves the images into a target parent folder, with
+% subfolders, with the image file names corrected.
+% (5) You may need to change the folder/file name prefixs (even formats)
+% (6) This code is a even for more specific use.  It changes the file name
+% format from 'rXcY' to a single 'Z' number.
 
 folder_source = uigetdir('d:\Marissa_test_20170409','select source image parent folder');
 folder_target = uigetdir('d:\Marissa_test_20170409','select target parent folder');
 
-pathPrefix = '20170409_ts5Al_01_e';     % change !!!
-namePrefix = '20170409_ts5Al_01_e';     % change !!!
+subfolderNamePrefix = '20170430_ts5Al_02_test_e';     % change !!!
+fileNamePrefix = '20170430_ts5Al_02_e';     % change !!!
 for iR = 0:3
     for iC = 0:13
-        for iE = 0:5
-            fNameFrom = [namePrefix,num2str(iE),'_','r',num2str(iR),'c',num2str(iC),'.tif'];
+        for iE = 0:6
+            fNameFrom = [fileNamePrefix,num2str(iE),'_','r',num2str(iR),'c',num2str(iC),'.tif'];
             
             % fNameFrom_a handles the file named by ifast.
             if (iC==0)
-                fNameFrom_a = [namePrefix,num2str(iE),'_','r',num2str(iR),'c','.tif'];
+                fNameFrom_a = [fileNamePrefix,num2str(iE),'_','r',num2str(iR),'c','.tif'];
             else
-                fNameFrom_a = [namePrefix,num2str(iE),'_','r',num2str(iR),'c-',num2str(iC),'.tif'];
+                fNameFrom_a = [fileNamePrefix,num2str(iE),'_','r',num2str(iR),'c-',num2str(iC),'.tif'];
             end
             
-            fNameTo = [namePrefix,num2str(iE),'_',num2str(iR*14+iC),'.tif'];
-            pathFrom = [folder_source,'\',pathPrefix,num2str(iE)];
-            pathTo = [folder_target,'\',pathPrefix,num2str(iE)];
+            fNameTo = [fileNamePrefix,num2str(iE),'_',num2str(iR*14+iC),'.tif'];
+            pathFrom = [folder_source,'\',subfolderNamePrefix,num2str(iE)];
+            pathTo = [folder_target,'\',subfolderNamePrefix,num2str(iE)];
             mkdir(pathTo);
             try
                 copyfile([pathFrom,'\',fNameFrom],[pathTo,'\',fNameTo],'f');
@@ -33,6 +45,6 @@ for iR = 0:3
                 copyfile([pathFrom,'\',fNameFrom_a],[pathTo,'\',fNameTo],'f');
             end
         end
-        [iR,iC]
+        disp([iR,iC]);
     end
 end

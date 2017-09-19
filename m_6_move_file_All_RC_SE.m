@@ -1,6 +1,15 @@
 % move Marissa's data
 % chenzhe, 2017-04-05
 % chenzhe, 2017-05-25 make it move between all three folders.
+%
+% chenzhe, 2017-09-18.
+% (1) This code was used to move files among different folders/subfolders.
+% (2) There are 3 types of folders: all together, by row-col number, by
+% elongation 
+% (3) This modification is to use make_FOV_string, so this code can handle
+% files that are named in sequence rather than 'rc' format.
+% (4) You can modify the appropriate folder/subfolder/filename format, and
+% directions of copying.
 
 pathAll = uigetdir('D:\','path all');
 pathRC = uigetdir('D:\Marissa_test_20170430_renamed_cropped_byFOV_rotated\','path to rc');
@@ -8,41 +17,48 @@ pathSE = uigetdir('D:\Marissa_test_20170430_renamed_cropped_sequential_rotated\'
 f1 = '20170430_ts5Al_02_e';
 f2 = '_';
 FORMAT = '.mat';    % or '.tif'
-cpdir = [2 1];    % Copy direction [from to].  1=all, 2=RC, 3=SE
+copydirection = [2 3];    % Copy direction [from to].  1=all, 2=RC, 3=SE
 
-for iR = 0:3
-    for iC = 0:13
-        mkdir([pathRC,'\','r',num2str(iR),'c',num2str(iC)]);
-     
-%         if (mod(iR,2)==1)
-%             iRC = iR*(5+1) + (5-iC)+1;
-%         else
-%             iRC = iR*(5+1) + iC+1;
-%         end
-%         if iRC < 10
-%             FOV = ['00',num2str(iRC)];
-%         else
-%             FOV = ['0',num2str(iRC)];
-%         end
+B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
+row_start = 0;  % starting # of FOV rows
+row_end = 3;
+col_start = 0;
+col_end = 13;    % ending # of FOV cols
+e_start = 0;
+e_stop = 6;     % elongation #
 
-        for iE = 0:6
-           mkdir([pathSE,'\','e',num2str(iE)]);
+% file name format: [f1,STOP{#},'_',FOV{#,#}]
+% FOV = make_FOV_string(ri, rf, ci, cf, nDigits, sequence)
+% sequence = 'rc','snake',or 'raster'
+% Usually, all FOVs are analyzed
+FOV = make_FOV_string(abs(B-1), row_end, abs(B-1), col_end, 1, 'rc');   
 
+
+%% 
+for iR = row_start:row_end
+    for iC = col_start:col_end
+        folderRC = [pathRC,'\','r',num2str(iR),'c',num2str(iC)];    % if necessary, change the format of the folder name ------------------
+        mkdir(folderRC);    
+        for iE = e_start:e_stop
+            folderSE = [pathSE,'\','e',num2str(iE)];                 % if necessary, change the format of the folder name ------------------
+            mkdir(folderSE);                
+            
+%             % A simple code if you have more digits to represent elongation leve.  Disable for now.
 %             if iE+1<10
 %                 STOP = ['00',num2str(iE+1)];
 %             else
 %                 STOP = ['0',num2str(iE+1)];
 %             end
             
-            fNameAll = [f1,num2str(iE),'_','r',num2str(iR),'c',num2str(iC),FORMAT];
-            fNameRC = [f1,num2str(iE),'_','r',num2str(iR),'c',num2str(iC),FORMAT];
-            fNameSE = [f1,num2str(iE),'_','r',num2str(iR),'c',num2str(iC),FORMAT];
+            fNameAll = [f1,num2str(iE),'_',FOV{iR+B,iC+B},FORMAT];
+            fNameRC = [f1,num2str(iE),'_',FOV{iR+B,iC+B},FORMAT];
+            fNameSE = [f1,num2str(iE),'_',FOV{iR+B,iC+B},FORMAT];
             
-            cpstr{1} = [pathAll,'\',fNameAll];
-            cpstr{2} = [pathRC,'\','r',num2str(iR),'c',num2str(iC),'\',fNameRC];
-            cpstr{3} = [pathSE,'\','e',num2str(iE),'\',fNameSE];
-            % just change this depending on your copy direction.
-            copyfile(cpstr{cpdir(1)},cpstr{cpdir(2)},'f');
+            copystr{1} = [pathAll,'\',fNameAll];
+            copystr{2} = [folderRC,'\',fNameRC];
+            copystr{3} = [folderSE,'\',fNameSE];
+            % copy from direction 1 to 2
+            copyfile(copystr{copydirection(1)},copystr{copydirection(2)},'f');
         end
         disp([iR,iC,iE]);
     end

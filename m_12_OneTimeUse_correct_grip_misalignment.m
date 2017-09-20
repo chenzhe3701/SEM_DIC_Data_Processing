@@ -12,6 +12,15 @@
 %
 % chenzhe, 2017-06-08, update.  Using transformation, estimate xi,xf,yi,yf
 
+% chenzhe, 2017-09-20, add note
+% (1) I think this code is still useful, so I will edit it. In the future,
+% who knows if there will be a test with sample misaligned and a figurable
+% misalignment angle? hehe...
+% (2) Whether corrected the exy of Vic2D output, this code should both work
+% (3) But after running this code, the exy should be corrected! Hurray!
+% (4) I think this code was commented well.  So maybe I should just add the
+% above notes.
+
 [f,p] = uigetfile('D:\Marissa_test_20170430_stitched_DIC\xyuv_dic_NonIncremental','select dic files need to be rotated','multiselect','on');
 if ~iscell(f)
     f = cellstr(f);
@@ -26,6 +35,7 @@ M = M3(1:2,1:2);
 % U is the apparent, X is the actual.  So A should be active, i.e., R
 tform = maketform('affine',R);
 
+%%
 for iF = 1:length(f)
     % Method (1): try to rotate Rotated back to Original
     % First time, decide the proper range based on 2nd file.

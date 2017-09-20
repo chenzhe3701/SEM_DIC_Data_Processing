@@ -1,6 +1,15 @@
 % estimate the grip direction based on xyTrans and xyStage info.
 %
 % chenzhe, 2017-05-22
+%
+% chenzhe, 2017-09-20 added note
+% (1) This is truly a historic code for  20170430 test.
+% (2) It looks at the hdr file for the four corner fovs (could look at all
+% fovs).  Analyze the working distance, and stage position change.
+% (3) The plot is a stage position change, indicating the axis of sample
+% elongation -- this sample elongated along a direction 2.74 degrees ccw
+% wrt the horizontal direction.
+% (4) You could also look at WD, but looks like this sample was OK.
 
 pathHdr = uigetdir('D:\Marissa_test_20170430\distortion_correction_setup_files\all hdr','choose the hdr folder');
 pathDic = uigetdir('D:\Marissa_test_20170430\2]_20170430_ts5Al_02 tensile test_non_incremental_DIC','choose the dic folder');

@@ -19,7 +19,7 @@ if ~iscell(f)
     f = cellstr(f);
 end
 
-%% creat a maks
+%% creat a mask
 
 %  load([p,'SigmaMask'],'mask');
 

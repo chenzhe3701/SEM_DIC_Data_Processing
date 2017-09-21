@@ -360,7 +360,7 @@ for iE = e_begin:e_end
         A = A(ind,:);
         Yu = Yu(ind);
         Yv = Yv(ind);
-        KA = K.*A;
+        KA = K.*A;      % KA is rank deficient, but LS is left inverse.
         
         uTrans = KA\Yu;
         uTrans = transpose(reshape(uTrans-uTrans(1),nC_FOV,nR_FOV));

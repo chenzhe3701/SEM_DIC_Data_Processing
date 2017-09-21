@@ -5,6 +5,11 @@
 % method == 0 requires my functions
 %
 % chenzhe, 2017-06-05
+%
+% chenzhe, 2017-09-20
+% note that it seems like currently, no symmetry considered, so the angle
+% is not regulated
+
 function [phi1_d,phi_d,phi2_d]=align_euler_to_sample(phi1_d,phi_d,phi2_d,method,p1,pp,pb)
 switch method
     case {'mtex',1}

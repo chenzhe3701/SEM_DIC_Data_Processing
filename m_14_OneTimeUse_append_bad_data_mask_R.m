@@ -6,6 +6,9 @@
 % append a variable called 'mask'
 %
 % chenzhe, 2017-06-09, apply to the rotated data.
+%
+% chenzhe, 2017-09-20.  Revise, change the variable name from 'mask_R' to
+% 'maskR'.
 
 %% select files
 
@@ -14,7 +17,7 @@ if ~iscell(f)
     f = cellstr(f);
 end
 
-%% creat a maks
+%% creat a mask
 
 %  load([p,'SigmaMask'],'mask');
 
@@ -23,9 +26,9 @@ imagesc(data.sigmaR); title('Draw polygon over good region. Double click to conf
 H = impoly;
 H.wait;
 disp('mask created');
-mask_R = H.createMask;
-imagesc(mask_R);title('This is the mask of sigma not zero');
-mask_R = double(mask_R);
+maskR = H.createMask;
+imagesc(maskR);title('This is the mask of sigma not zero');
+maskR = double(maskR);
 
 %% If you are satisfield with the mask
 % temporarily just for these few fields.
@@ -34,7 +37,7 @@ mask_R = double(mask_R);
 AppendMask = 1;
 if(AppendMask==1)
     for ii = 1:length(f)
-        save([p,f{ii}],'mask_R','-append');
+        save([p,f{ii}],'maskR','-append');
     end
 end
 
@@ -53,6 +56,6 @@ end
 %     save([p,f{ii}],'exx','exy','eyy','sigma','u','v','x','y','-append');
 % end
 
-save([p,'SigmaMask_R'],'mask_R');
+save([p,'SigmaMaskR'],'maskR');
 
 

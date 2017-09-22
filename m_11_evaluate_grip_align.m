@@ -10,9 +10,11 @@
 % elongation -- this sample elongated along a direction 2.74 degrees ccw
 % wrt the horizontal direction.
 % (4) You could also look at WD, but looks like this sample was OK.
+% (5) The use of this code is very specific.  So I would not do too much
+% optimization or generalization.
 
-pathHdr = uigetdir('D:\Marissa_test_20170430\distortion_correction_setup_files\all hdr','choose the hdr folder');
-pathDic = uigetdir('D:\Marissa_test_20170430\2]_20170430_ts5Al_02 tensile test_non_incremental_DIC','choose the dic folder');
+pathHdr = uigetdir('D:\Marissa_test_20170430\distortion_correction_setup_files\all hdr','choose the hdr folder, all hdr in one folder');
+pathDic = uigetdir('D:\Marissa_test_20170430\2]_20170430_ts5Al_02 tensile test_non_incremental_DIC','choose the dic folder, all dic in one folder');
 
 if ~strcmpi(pathHdr(end),'\')
     pathHdr = [pathHdr,'\'];

@@ -20,6 +20,7 @@
 % (3) But after running this code, the exy should be corrected! Hurray!
 % (4) I think this code was commented well.  So maybe I should just add the
 % above notes.
+% (5) The suggestion is that: do not only select the undeformed file.
 
 [f,p] = uigetfile('D:\Marissa_test_20170430_stitched_DIC\xyuv_dic_NonIncremental','select dic files need to be rotated','multiselect','on');
 if ~iscell(f)
@@ -40,7 +41,11 @@ for iF = 1:length(f)
     % Method (1): try to rotate Rotated back to Original
     % First time, decide the proper range based on 2nd file.
     if 1==iF
-        load([p,f{2}],'x','y','u','v','exx','exy','eyy','sigma','exy_corrected');
+        try
+            load([p,f{2}],'x','y','u','v','exx','exy','eyy','sigma','exy_corrected');
+        catch
+            load([p,f{1}],'x','y','u','v','exx','exy','eyy','sigma','exy_corrected');
+        end
         rect = [x(1),x(end,1),x(1,end),x(end,end);
             y(1),y(end,1),y(1,end),y(end,end)];
         [rx,ry] = tformfwd(tform, rect(1,:), rect(2,:));

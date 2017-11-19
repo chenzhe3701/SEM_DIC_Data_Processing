@@ -31,20 +31,20 @@ addChenFunction;
 DRAWFIGURE = 0;
 
 % Path for images and dic data (dic data usually in the same folder as the images)
-path_DIC = uigetdir('D:\chen_Ti7Al_B6\image_sequential\','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
-path_target = uigetdir('D:\compare xcorr\Ti7Al_tescan_fft_noCut_noFilter','select a target folder to hold the stitched images and translation data');
+path_DIC = uigetdir('J:\Marissa Data\Marissa_test_20170430_renamed_cropped\','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
+path_target = uigetdir('D:\compare xcorr\Al_tescan_fft_noCut_noFilter','select a target folder to hold the stitched images and translation data');
 
 % Sub folder name: [subFolderNamePrefix_1,iE], 
 % e.g., 20170430_ts5Al_02_test_e0 
-subfolderNamePrefix_1 = 'e';
+subfolderNamePrefix_1 = '20170430_ts5Al_02_test_e';
 
 % File name format: [fileNamePrefix_1,iE,fileNamePrefix_2='_', 'r', iR, 'c', iC]
 % e.g., 20170409_ts5Al_01_e4_r0c0
-fileNamePrefix_1 = 'Ti7Al_B6_e';  
+fileNamePrefix_1 = '20170430_ts5Al_02_e';  
 fileNamePrefix_2 = '_';
 
 % resolution of images
-resX = 4096;
+resX = 6144;
 resY = 4096;
 % overlay/window size to search and match images
 OVERLAY = 200*0+4096;
@@ -53,9 +53,9 @@ reduction = 10;
 
 B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
 row_start = 0; % starting # of FOV rows
-row_end = 5;
+row_end = 3;
 col_start = 0;
-col_end = 5;  % ending # of FOV cols
+col_end = 13;  % ending # of FOV cols
 iE_start = 0;
 iE_stop = 0;
 singleFOV = 0;  % This overwrite the 'iE' so the code can be conveniently applied to a single strain

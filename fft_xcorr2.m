@@ -6,7 +6,7 @@
 % but I force it to used the faster method.
 
 
-function c = fft_xcorr2(A,B)
+function c = fft_xcorr2(A,B,filterTF)
 [r1,c1] = size(A);
 [r2,c2] = size(B);
 
@@ -14,7 +14,15 @@ AA = zeros(r1+r2-1, c1+c2-1);
 AA(r2:end,c2:end) = A;
 
 BB = zeros(r1+r2-1, c1+c2-1);
-BB(1:r2, 1:c2)=B;
+BB(1:r2, 1:c2) = B;
 
 c = ifft2(fft2(AA).*conj(fft2(BB)));
+
+if 1==filterTF
+    filtered = c;
+    filtered = sgolayfilt(filtered,1,5,[],1);
+    filtered = sgolayfilt(filtered,1,5,[],2);
+    c = c-filtered;
+end
+
 end

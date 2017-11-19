@@ -32,7 +32,7 @@ DRAWFIGURE = 0;
 
 % Path for images and dic data (dic data usually in the same folder as the images)
 path_DIC = uigetdir('D:\chen_Ti7Al_B6\image_sequential\','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
-path_target = uigetdir('D:\compare xcorr\Ti7Al_tescan_xcorr_noCut_Filter','select a target folder to hold the stitched images and translation data');
+path_target = uigetdir('D:\compare xcorr\Ti7Al_tescan_fft_noCut_noFilter','select a target folder to hold the stitched images and translation data');
 
 % Sub folder name: [subFolderNamePrefix_1,iE], 
 % e.g., 20170430_ts5Al_02_test_e0 
@@ -73,7 +73,7 @@ transY_incremental = zeros(row_end+B,col_end+B);
 transX = zeros(row_end+B,col_end+B);
 transY = zeros(row_end+B,col_end+B);
 clear specialRC;    % but can define special cases
-corrMethod = 2;     % 1 = fft, 2 = normxcorr2
+corrMethod = 1;     % 1 = fft, 2 = normxcorr2
 cutEdge = 0;    % cut edge = 1, vs average=0, in blending
 
 

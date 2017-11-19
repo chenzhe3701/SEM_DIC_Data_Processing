@@ -26,13 +26,13 @@
 % a region of FOVs interested to stitch
 % 'Premature optimization is the root of all evil'...
 
-
+addChenFunction;
 % DRAWFIGURE = 0: no figure, 1: some, 2: more
 DRAWFIGURE = 0;
 
 % Path for images and dic data (dic data usually in the same folder as the images)
 path_DIC = uigetdir('D:\WE43_T6_C1_insitu_compression\','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
-path_target = uigetdir('D:\WE43_T6_C1_insitu_compression\tempForDemonstratePaper\','select a target folder to hold the stitched images and translation data');
+path_target = uigetdir('D:\compare xcorr\WE43_ext_xcorr_noCut_noFilter','select a target folder to hold the stitched images and translation data');
 
 % Sub folder name: [subFolderNamePrefix_1,iE], 
 % e.g., 20170430_ts5Al_02_test_e0 
@@ -47,7 +47,7 @@ fileNamePrefix_2 = '_';
 resX = 4096;
 resY = 4096;
 % overlay/window size to search and match images
-OVERLAY = 200;
+OVERLAY = 200*0+4096;
 % save reduced size image
 reduction = 10;
 
@@ -73,8 +73,8 @@ transY_incremental = zeros(row_end+B,col_end+B);
 transX = zeros(row_end+B,col_end+B);
 transY = zeros(row_end+B,col_end+B);
 clear specialRC;    % but can define special cases
-corrMethod = 1;     % 1 = fft, 2 = normxcorr2
-cutEdge = 1;    % cut edge = 1, vs average=0, in blending
+corrMethod = 2;     % 1 = fft, 2 = normxcorr2
+cutEdge = 0;    % cut edge = 1, vs average=0, in blending
 
 
 %%
@@ -102,7 +102,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
             try
                 switch corrMethod
                     case 1
-                        [yOffSet,xOffSet] = fft_register(I,J,'d',[0.7*size(I,1), 0,  Oly, 0], [0, 0.7*size(J,1),  Oly, 0]);         % could change this accordingly, be careful with your choice of parameter ---------------------------
+                        [yOffSet,xOffSet] = fft_register(I,J,'d',[0.7*size(I,1)*0, 0,  Oly*0, 0], [0, 0.7*size(J,1)*0,  Oly*0, 0]);         % could change this accordingly, be careful with your choice of parameter ---------------------------
                     case 2
                         % initially crop a small region to detect
                         yi = size(I,1) - Oly; % xi, yi are zero-based.
@@ -112,7 +112,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                         x_neg = size(I,2)-xi;   % Iprime wrt lower right corner of I
                         y_neg = size(I,1)-yi;
                         
-                        c = xcorr2(Iprime, J);
+                        c = fft_xcorr2(double(Iprime), double(J));
                         
                         if DRAWFIGURE > 1
                             figure;surf(c);shading flat; set(gca,'ydir','reverse');view(0,90);
@@ -152,7 +152,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                 x_neg = size(I,2)-xi;   % Iprime wrt lower right corner of I
                 y_neg = size(I,1)-yi;
                 
-                c = xcorr2(Iprime, J);
+                c = fft_xcorr2(double(Iprime), double(J));
                 if DRAWFIGURE > 1
                     figure;surf(c);shading flat; set(gca,'ydir','reverse');view(0,90);
                 end
@@ -195,7 +195,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                 try
                     switch corrMethod
                         case 1
-                            [yOffSet,xOffSet] = fft_register(I,J,'r',[Oly, 0,  0.7*size(I,2), 0], [0, Oly,  0, 0.7*size(J,2)]);       % change this accordingly, be careful with your choice of parameter ---------------------------
+                            [yOffSet,xOffSet] = fft_register(I,J,'r',[Oly*0, 0,  0.7*size(I,2)*0, 0], [0, Oly*0,  0, 0.7*size(J,2)*0]);       % change this accordingly, be careful with your choice of parameter ---------------------------
                         case 2
                             % initially crop a small region to detect
                             xi = size(I,2)-Oly; % xi, yi are zero-based.
@@ -212,7 +212,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                             x_neg = size(I,2)-xi;   % Iprime wrt lower right corner of I
                             y_neg = size(I,1)-yi;
                             
-                            c = xcorr2(Iprime, J);
+                            c = fft_xcorr2(double(Iprime), double(J));
                             
                             if DRAWFIGURE > 1
                                 figure;surf(c);shading flat; set(gca,'ydir','reverse');view(0,90);
@@ -253,7 +253,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                     x_neg = size(I,2)-xi;   % Iprime wrt lower right corner of I
                     y_neg = size(I,1)-yi;
                     
-                    c = xcorr2(Iprime, J);
+                    c = fft_xcorr2(double(Iprime), double(J));
                     if DRAWFIGURE > 1
                         figure;surf(c);shading flat; set(gca,'ydir','reverse');view(0,90);
                     end

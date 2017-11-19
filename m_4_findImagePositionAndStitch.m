@@ -112,7 +112,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                         x_neg = size(I,2)-xi;   % Iprime wrt lower right corner of I
                         y_neg = size(I,1)-yi;
                         
-                        c = normxcorr2(Iprime, J);
+                        c = xcorr2(Iprime, J);
                         
                         if DRAWFIGURE > 1
                             figure;surf(c);shading flat; set(gca,'ydir','reverse');view(0,90);
@@ -152,7 +152,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                 x_neg = size(I,2)-xi;   % Iprime wrt lower right corner of I
                 y_neg = size(I,1)-yi;
                 
-                c = normxcorr2(Iprime, J);
+                c = xcorr2(Iprime, J);
                 if DRAWFIGURE > 1
                     figure;surf(c);shading flat; set(gca,'ydir','reverse');view(0,90);
                 end
@@ -212,7 +212,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                             x_neg = size(I,2)-xi;   % Iprime wrt lower right corner of I
                             y_neg = size(I,1)-yi;
                             
-                            c = normxcorr2(Iprime, J);
+                            c = xcorr2(Iprime, J);
                             
                             if DRAWFIGURE > 1
                                 figure;surf(c);shading flat; set(gca,'ydir','reverse');view(0,90);
@@ -253,7 +253,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                     x_neg = size(I,2)-xi;   % Iprime wrt lower right corner of I
                     y_neg = size(I,1)-yi;
                     
-                    c = normxcorr2(Iprime, J);
+                    c = xcorr2(Iprime, J);
                     if DRAWFIGURE > 1
                         figure;surf(c);shading flat; set(gca,'ydir','reverse');view(0,90);
                     end

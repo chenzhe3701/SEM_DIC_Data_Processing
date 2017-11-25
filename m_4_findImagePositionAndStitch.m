@@ -26,13 +26,13 @@
 % a region of FOVs interested to stitch
 % 'Premature optimization is the root of all evil'...
 
-addChenFunction;
+
 % DRAWFIGURE = 0: no figure, 1: some, 2: more
 DRAWFIGURE = 0;
 
 % Path for images and dic data (dic data usually in the same folder as the images)
-path_DIC = uigetdir('J:\Marissa Data\Marissa_test_20170430_renamed_cropped\','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
-path_target = uigetdir('D:\compare xcorr\Al_tescan_fft_noCut_filter','select a target folder to hold the stitched images and translation data');
+path_DIC = uigetdir('D:\Marissa_test_20170430_renamed_cropped\','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
+path_target = uigetdir('D:\','select a target folder to hold the stitched images and translation data');
 
 % Sub folder name: [subFolderNamePrefix_1,iE], 
 % e.g., 20170430_ts5Al_02_test_e0 

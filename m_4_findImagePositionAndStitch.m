@@ -36,11 +36,11 @@ path_target = uigetdir('D:\','select a target folder to hold the stitched images
 
 % Sub folder name: [subFolderNamePrefix_1,iE], 
 % e.g., 20170430_ts5Al_02_test_e0 
-subfolderNamePrefix_1 = 'cropped';
+subfolderNamePrefix_1 = '20170430_ts5Al_02_test_e';
 
 % File name format: [fileNamePrefix_1,iE,fileNamePrefix_2='_', 'r', iR, 'c', iC]
 % e.g., 20170409_ts5Al_01_e4_r0c0
-fileNamePrefix_1 = 'WE43_T6_C1_post';  
+fileNamePrefix_1 = '20170430_ts5Al_02_e';  
 fileNamePrefix_2 = '_';
 
 % resolution of images
@@ -53,9 +53,9 @@ reduction = 10;
 
 B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
 row_start = 0; % starting # of FOV rows
-row_end = 11;
+row_end = 3;
 col_start = 0;
-col_end = 12;  % ending # of FOV cols
+col_end = 13;  % ending # of FOV cols
 iE_start = 0;
 iE_stop = 0;
 singleFOV = 1;  % This overwrite the 'iE' so the code can be conveniently applied to a single strain
@@ -73,7 +73,7 @@ transY_incremental = zeros(row_end+B,col_end+B);
 transX = zeros(row_end+B,col_end+B);
 transY = zeros(row_end+B,col_end+B);
 clear specialRC;    % but can define special cases
-corrMethod = 1;     % 1 = fft, 2 = normxcorr2
+corrMethod = 2;     % 1 = fft, 2 = normxcorr2
 cutEdge = 1;    % cut edge = 1, vs average=0, in blending
 
 

@@ -300,6 +300,16 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
         end
     end
     
+    makeAllTransPositive = 1;
+    if makeAllTransPositive
+        xi = -min(transX(:));     % overall shift when upper_left is (0,0) --------------------------
+        yi = -min(transY(:));
+        transX = transX + xi;   % make the smallest translation as 0, instead of negative
+        transY = transY + yi;
+        transX_incremental(row_start+B,col_start+B) = transX_incremental(row_start+B,col_start+B) + xi;
+        transY_incremental(row_start+B,col_start+B) = transY_incremental(row_start+B,col_start+B) + yi;
+    end
+    
     save([path_target,'\','translations_searched_vertical_stop_',num2str(iE)],'transX','transY','transX_incremental','transY_incremental');
     
     % The following is the stitching part.

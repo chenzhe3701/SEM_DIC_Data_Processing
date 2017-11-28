@@ -77,8 +77,8 @@ for iR = row_start:row_end
         img1 = find_boundary_from_ID_matrix(Fit1);
         img2 = find_boundary_from_ID_matrix(Fit2);
         
-                img1 = cell2mat(arrayfun(@(x,y,z) calculate_misorientation_euler_d([0,0,0],[x,y,z]/pi*180,'hcp'), phi1, phi, phi2,'uniformoutput',false));
-                img2 = cell2mat(arrayfun(@(x,y,z) calculate_misorientation_euler_d([0,0,0],[x,y,z]/pi*180,'hcp'), Phi1, Phi, Phi2,'uniformoutput',false));
+%         img1 = cell2mat(arrayfun(@(x,y,z) calculate_misorientation_euler_d([0,0,0],[x,y,z]/pi*180,'hcp'), phi1, phi, phi2,'uniformoutput',false));
+%         img2 = cell2mat(arrayfun(@(x,y,z) calculate_misorientation_euler_d([0,0,0],[x,y,z]/pi*180,'hcp'), Phi1, Phi, Phi2,'uniformoutput',false));
         
 %         imwrite(uint16(img1/max(img1(:))*65535),[path_target,'\',fName1,'.tif']);
 %         imwrite(uint16(img2/max(img2(:))*65535),[path_target,'\',fName2,'.tif']);
@@ -107,8 +107,8 @@ for iR = row_start:row_end
             img1 = find_boundary_from_ID_matrix(Fit1);
             img2 = find_boundary_from_ID_matrix(Fit2);
             
-                        img1 = cell2mat(arrayfun(@(x,y,z) calculate_misorientation_euler_d([0,0,0],[x,y,z]/pi*180,'hcp'), phi1, phi, phi2,'uniformoutput',false));
-                        img2 = cell2mat(arrayfun(@(x,y,z) calculate_misorientation_euler_d([0,0,0],[x,y,z]/pi*180,'hcp'), Phi1, Phi, Phi2,'uniformoutput',false));
+%             img1 = cell2mat(arrayfun(@(x,y,z) calculate_misorientation_euler_d([0,0,0],[x,y,z]/pi*180,'hcp'), phi1, phi, phi2,'uniformoutput',false));
+%             img2 = cell2mat(arrayfun(@(x,y,z) calculate_misorientation_euler_d([0,0,0],[x,y,z]/pi*180,'hcp'), Phi1, Phi, Phi2,'uniformoutput',false));
             
             resY_max = max(resY_max,size(img1,1));  % update with size of the biggest FOV
             resX_max = max(resX_max,size(img1,2));

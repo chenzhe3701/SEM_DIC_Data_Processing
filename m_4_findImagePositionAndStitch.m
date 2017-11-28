@@ -126,6 +126,8 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                         
                         xOffSet = size(I,2) - osx_neg;  % positive offset, J's upper-left coner's offset wrt I's upper-left corner
                         yOffSet = size(I,1) - osy_neg;
+                    case 3
+                        [yOffSet,xOffSet] = normxcorr2A_register(J,I,'d',[0.7*size(I,1)*0, 0,  Oly*0, 0], [0, 0.7*size(J,1)*0,  Oly*0, 0], 1);
                 end
                 
                 if DRAWFIGURE > 0
@@ -226,6 +228,8 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                             
                             xOffSet = size(I,2) - osx_neg;
                             yOffSet = size(I,1) - osy_neg;
+                        case 3
+                            [yOffSet,xOffSet] = normxcorr2A_register(J,I,'r',[0.7*size(I,1)*0, 0,  Oly*0, 0], [0, 0.7*size(J,1)*0,  Oly*0, 0], 1);
                             
                     end
                     

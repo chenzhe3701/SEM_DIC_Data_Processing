@@ -26,25 +26,25 @@
 % a region of FOVs interested to stitch
 % 'Premature optimization is the root of all evil'...
 
-
+addChenFunction;
 % DRAWFIGURE = 0: no figure, 1: some, 2: more
 DRAWFIGURE = 0;
 
 % Path for images and dic data (dic data usually in the same folder as the images)
-path_DIC = uigetdir('D:\Marissa_test_20170430_renamed_cropped\','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
-path_target = uigetdir('D:\','select a target folder to hold the stitched images and translation data');
+path_DIC = uigetdir('D:\WE43_T6_C1_insitu_compression\','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
+path_target = uigetdir('D:\compare xcorr\WE43_ext_xcorr_noCut_filter','select a target folder to hold the stitched images and translation data');
 
 % Sub folder name: [subFolderNamePrefix_1,iE], 
 % e.g., 20170430_ts5Al_02_test_e0 
-subfolderNamePrefix_1 = '20170430_ts5Al_02_test_e';
+subfolderNamePrefix_1 = 's';
 
 % File name format: [fileNamePrefix_1,iE,fileNamePrefix_2='_', 'r', iR, 'c', iC]
 % e.g., 20170409_ts5Al_01_e4_r0c0
-fileNamePrefix_1 = '20170430_ts5Al_02_e';  
+fileNamePrefix_1 = 'WE43_T6_C1_s';  
 fileNamePrefix_2 = '_';
 
 % resolution of images
-resX = 6144;
+resX = 4096;
 resY = 4096;
 % overlay/window size to search and match images
 OVERLAY = 200*0+4096;
@@ -53,9 +53,9 @@ reduction = 10;
 
 B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
 row_start = 0; % starting # of FOV rows
-row_end = 3;
+row_end = 10;
 col_start = 0;
-col_end = 13;  % ending # of FOV cols
+col_end = 18;  % ending # of FOV cols
 iE_start = 0;
 iE_stop = 0;
 singleFOV = 0;  % This overwrite the 'iE' so the code can be conveniently applied to a single strain
@@ -73,7 +73,7 @@ transY_incremental = zeros(row_end+B,col_end+B);
 transX = zeros(row_end+B,col_end+B);
 transY = zeros(row_end+B,col_end+B);
 clear specialRC;    % but can define special cases
-corrMethod = 1;     % 1 = fft, 2 = normxcorr2
+corrMethod = 3;     % 1 = fft, 2 = normxcorr2
 cutEdge = 0;    % cut edge = 1, vs average=0, in blending
 
 
@@ -127,7 +127,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                         xOffSet = size(I,2) - osx_neg;  % positive offset, J's upper-left coner's offset wrt I's upper-left corner
                         yOffSet = size(I,1) - osy_neg;
                     case 3
-                        [yOffSet,xOffSet] = normxcorr2A_register(J,I,'d',[0.7*size(I,1)*0, 0,  Oly*0, 0], [0, 0.7*size(J,1)*0,  Oly*0, 0], 1);
+                        [yOffSet,xOffSet] = normxcorr2A_register(J,I,[0.7*size(I,1)*0, 0,  Oly*0, 0], [0, 0.7*size(J,1)*0,  Oly*0, 0], 1)
                 end
                 
                 if DRAWFIGURE > 0
@@ -197,7 +197,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                 try
                     switch corrMethod
                         case 1
-                            [yOffSet,xOffSet] = fft_register(I,J,'r',[Oly*0, 0,  0.7*size(I,2)*0, 0], [0, Oly*0,  0, 0.7*size(J,2)*0], 1);       % change this accordingly, be careful with your choice of parameter ---------------------------
+                            [yOffSet,xOffSet] = fft_register(I,J,[Oly*0, 0,  0.7*size(I,2)*0, 0], [0, Oly*0,  0, 0.7*size(J,2)*0], 1);       % change this accordingly, be careful with your choice of parameter ---------------------------
                         case 2
                             % initially crop a small region to detect
                             xi = size(I,2)-Oly; % xi, yi are zero-based.
@@ -229,7 +229,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                             xOffSet = size(I,2) - osx_neg;
                             yOffSet = size(I,1) - osy_neg;
                         case 3
-                            [yOffSet,xOffSet] = normxcorr2A_register(J,I,'r',[0.7*size(I,1)*0, 0,  Oly*0, 0], [0, 0.7*size(J,1)*0,  Oly*0, 0], 1);
+                            [yOffSet,xOffSet] = normxcorr2A_register(J,I, [0.7*size(I,1)*0, 0,  Oly*0, 0], [0, 0.7*size(J,1)*0,  Oly*0, 0], 1);
                             
                     end
                     

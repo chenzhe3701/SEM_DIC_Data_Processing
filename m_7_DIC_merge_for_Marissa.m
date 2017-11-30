@@ -105,6 +105,8 @@ xyi = 0;
 resX = 6144;            % res of each image
 resY = 4096;
 
+% This takes care of the condition when you have a translation<0. 
+% Since m_4 was modified to makeAllTransPositive, no need to worry here.
 xi_mesh = xyi + min(transX(:));
 xf_mesh = xi_mesh + max(transX(:))+resX + (max(transX(:,1))-xi_mesh);
 yi_mesh = xyi + min(transY(:));

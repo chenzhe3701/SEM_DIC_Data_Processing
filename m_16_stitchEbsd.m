@@ -91,6 +91,7 @@ for iR = row_start:row_end
         end
         
         [yOffSet,xOffSet] = fft_register_i(img1,img2, 'r', [0,0,0,0], [0,0,0,0], [0,63]);         % change this accordingly, be careful with your choice of parameter ---------------------------
+        [yOffSet,xOffSet] = normxcorr2A_register(img2,img1,[40,0,0,0], [40,0,0,0],1);
         
         transX_incremental(iR+1,iC+2) = xOffSet
         transY_incremental(iR+1,iC+2) = yOffSet
@@ -120,8 +121,10 @@ for iR = row_start:row_end
             
             if iR==0
                 [yOffSet,xOffSet] = fft_register_i(img1,img2, 'd', [0,0,0,0], [0,0,0,0], [140,0]);       % change this accordingly, be careful with your choice of parameter ---------------------------
+                [yOffSet,xOffSet] = normxcorr2A_register(img2,img1,[0,0,0,0],[0,0,0,0],1);
             else
                 [yOffSet,xOffSet] = fft_register_i(img1,img2, 'd', [0,0,0,0], [0,0,0,0], [170,0]);
+                [yOffSet,xOffSet] = normxcorr2A_register(img2,img1,[0,0,0,0],[0,0,0,0],1);
             end
             
             transX_incremental(iR+2,iC+1) = xOffSet

@@ -73,7 +73,7 @@ transY_incremental = zeros(row_end+B,col_end+B);
 transX = zeros(row_end+B,col_end+B);
 transY = zeros(row_end+B,col_end+B);
 clear specialRC;    % but can define special cases
-corrMethod = 1;     % 1 = fft, 2 = normxcorr2
+corrMethod = 3;     % 1 = fft, 2 = normxcorr2
 cutEdge = 0;    % cut edge = 1, vs average=0, in blending
 
 
@@ -126,6 +126,8 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                         
                         xOffSet = size(I,2) - osx_neg;  % positive offset, J's upper-left coner's offset wrt I's upper-left corner
                         yOffSet = size(I,1) - osy_neg;
+                    case 3
+                        [yOffSet,xOffSet] = normxcorr2A_register(J,I,[0.7*size(I,1)*0, 0,  Oly*0, 0], [0, 0.7*size(J,1)*0,  Oly*0, 0], 1)
                 end
                 
                 if DRAWFIGURE > 0
@@ -195,7 +197,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                 try
                     switch corrMethod
                         case 1
-                            [yOffSet,xOffSet] = fft_register(I,J,'r',[Oly*0, 0,  0.7*size(I,2)*0, 0], [0, Oly*0,  0, 0.7*size(J,2)*0], 1);       % change this accordingly, be careful with your choice of parameter ---------------------------
+                            [yOffSet,xOffSet] = fft_register(I,J,[Oly*0, 0,  0.7*size(I,2)*0, 0], [0, Oly*0,  0, 0.7*size(J,2)*0], 1);       % change this accordingly, be careful with your choice of parameter ---------------------------
                         case 2
                             % initially crop a small region to detect
                             xi = size(I,2)-Oly; % xi, yi are zero-based.
@@ -226,6 +228,8 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                             
                             xOffSet = size(I,2) - osx_neg;
                             yOffSet = size(I,1) - osy_neg;
+                        case 3
+                            [yOffSet,xOffSet] = normxcorr2A_register(J,I, [0.7*size(I,1)*0, 0,  Oly*0, 0], [0, 0.7*size(J,1)*0,  Oly*0, 0], 1);
                             
                     end
                     
@@ -298,6 +302,16 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
             end
             
         end
+    end
+    
+    makeAllTransPositive = 1;
+    if makeAllTransPositive
+        xi = -min(transX(:));     % overall shift when upper_left is (0,0) --------------------------
+        yi = -min(transY(:));
+        transX = transX + xi;   % make the smallest translation as 0, instead of negative
+        transY = transY + yi;
+        transX_incremental(row_start+B,col_start+B) = transX_incremental(row_start+B,col_start+B) + xi;
+        transY_incremental(row_start+B,col_start+B) = transY_incremental(row_start+B,col_start+B) + yi;
     end
     
     save([path_target,'\','translations_searched_vertical_stop_',num2str(iE)],'transX','transY','transX_incremental','transY_incremental');

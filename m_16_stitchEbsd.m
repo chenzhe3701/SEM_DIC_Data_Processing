@@ -90,8 +90,11 @@ for iR = row_start:row_end
             f1 = figure;imshowpair(img1,img2,'montage');
         end
         
-        [yOffSet,xOffSet] = fft_register_i(img1,img2, 'r', [0,0,0,0], [0,0,0,0], [0,63]);         % change this accordingly, be careful with your choice of parameter ---------------------------
-        [yOffSet,xOffSet] = normxcorr2A_register(img2,img1,[40,0,0,0], [40,0,0,0],1);
+        if(1==iR)
+            [yOffSet,xOffSet] = normxcorr2A_register(img2,img1,[1,1,1,1], [40,1,1,1],1);
+        else
+            [yOffSet,xOffSet] = normxcorr2A_register(img2,img1,[1,1,1,1], [1,1,1,1],1);
+        end
         
         transX_incremental(iR+1,iC+2) = xOffSet
         transY_incremental(iR+1,iC+2) = yOffSet
@@ -120,11 +123,9 @@ for iR = row_start:row_end
             end
             
             if iR==0
-                [yOffSet,xOffSet] = fft_register_i(img1,img2, 'd', [0,0,0,0], [0,0,0,0], [140,0]);       % change this accordingly, be careful with your choice of parameter ---------------------------
-                [yOffSet,xOffSet] = normxcorr2A_register(img2,img1,[0,0,0,0],[0,0,0,0],1);
+                [yOffSet,xOffSet] = normxcorr2A_register(img2,img1,[0,0,0,0], [40,0,0,0], 1);
             else
-                [yOffSet,xOffSet] = fft_register_i(img1,img2, 'd', [0,0,0,0], [0,0,0,0], [170,0]);
-                [yOffSet,xOffSet] = normxcorr2A_register(img2,img1,[0,0,0,0],[0,0,0,0],1);
+                [yOffSet,xOffSet] = normxcorr2A_register(img2,img1,[1,1,1,1], [1,1,1,1], 1);
             end
             
             transX_incremental(iR+2,iC+1) = xOffSet
@@ -133,44 +134,35 @@ for iR = row_start:row_end
             transY(iR+2,iC+1) = yOffSet + transY(iR+1,iC+1);
             
         end
-        
-        % if have specialRC to handle
-        if exist('specialRC','var')&&(~isempty(specialRC))
-            ind = find((iR==specialRC(:,1))&(iC==specialRC(:,2))&(iR==specialRC(:,3))&(iC+1==specialRC(:,4)));
-        else
-            ind = [];
-        end
-        if ~isempty(ind)
-            transX_incremental(1+specialRC(ind,3), 1+specialRC(ind,4)) = specialRC(ind,5);
-            transY_incremental(1+specialRC(ind,3), 1+specialRC(ind,4)) = specialRC(ind,6);
-            transX(1+specialRC(ind,3), 1+specialRC(ind,4)) = specialRC(ind,5) + transX(iR+1,iC+1)
-            transY(1+specialRC(ind,3), 1+specialRC(ind,4)) = specialRC(ind,6) + transY(iR+1,iC+1)
-        end
-        
+               
     end
 end
 disp([resX_max,resY_max]);
 save([path_target,'\','translations_ebsd'],'transX','transY','transX_incremental','transY_incremental');
-
-%% (2) fine search, and manual confirm
 load([path_target,'\','translations_ebsd']);
-cutEdge = -1;    % cut edge, vs average in blending
-buf = 100;
+save([path_target,'\','translations_ebsd_m'],'transX','transY','transX_incremental','transY_incremental');
+%% (2) manual confirm.  Can run this multiple times, with different tolerance  
+load([path_target,'\','translations_ebsd_m']);
+
+[nR,nC] = size(FOV);    % [nR, nC] is 1-based. right now. need to include 'B' in the future. 
+
+tolerance = 1000;   % if don't want to correct, change to 10000000
+
+buf = 100;          % makes blank space at the edges of the map
 xi = -min(transX(:));     % overall shift, leave 100 buffer positions for fine adjustment
 yi = -min(transY(:));
 xm = max(transX(:));    % maximum shift
 ym = max(transY(:));
 img = zeros(resY_max+yi+ym + 2*buf, resX_max+xi+xm +2*buf);
-[nR,nC] = size(FOV);
-nR = nR;
-nC = nC;
-tx = transX + buf;    % copy old for initial guess
-ty = transY + buf;
-txi = transX_incremental;
-tyi = transY_incremental;
 
-tolerance = 5;
-startingLoop = 1;
+transX = transX + buf;    % copy old for initial guess
+transY = transY + buf;
+
+% specify an [ir1,ic1; ir2,ic2; ir3,ic3;] to modify
+targetRC=[-1 -1];
+
+needInput = 0;
+reply = [0 0];
 for iRC = 2:nR+nC
     for iR = 1:(iRC-1)
         iC = iRC-iR;
@@ -179,23 +171,7 @@ for iRC = 2:nR+nC
             fName = [fileNamePrefix,fileNamePrefix1,FOV{iR,iC},fileNamePrefix2]; disp(fName);
             [~,~,~,~,~,~,~,~,~,Fit] = read_ang([path_EBSD_batch,'\',fName,fmt]);
             img1 = find_boundary_from_ID_matrix(Fit);
-            
-            [yOffSet,xOffSet] = fft_register_i(img,img1, '', [0,0,0,0], [0,0,0,0], [ty(iR,iC), tx(iR,iC)], tolerance);
-            xOffSets = [xOffSet-size(img,2), xOffSet, xOffSet+size(img,2)];
-            [~,ind] = min(abs(xOffSets-tx(iR,iC)));
-            xOffSet = xOffSets(ind);
-            yOffSets = [yOffSet-size(img,1), yOffSet, yOffSet+size(img,1)];
-            [~,ind] = min(abs(yOffSets-ty(iR,iC)));
-            yOffSet = yOffSets(ind);
-            if startingLoop
-                startingLoop=0;
-                xOffSet = tx(iR,iC);
-                yOffSet = ty(iR,iC);
-            end
-            
-            transX(iR,iC) = xOffSet;
-            transY(iR,iC) = yOffSet;
-            tolerance = max([abs(tx(iR,iC)-transX(iR,iC)),abs(ty(iR,iC)-transY(iR,iC)), tolerance]);    % update tolerance
+            img1(1:10,1:10)=2;
             
             [resY,resX] = size(img1);   % used for copy
             
@@ -206,12 +182,32 @@ for iRC = 2:nR+nC
                 mean(cat(3,img1,img2),3,'omitnan');
             f=myplot(img_temp);
             set(f,'units','normalized','outerposition',[0 0 1 1]);
-            disp([xOffSet,yOffSet]);
-            reply = input('input adjustment [r,c]: ','s');
-            while ~isempty(reply)
+            disp([iR iC transX_incremental(iR,iC) transY_incremental(iR,iC)]);
+             
+            if (abs(transX_incremental(iR,iC) - median(transX_incremental(:,iC)))>tolerance)...
+                    || (abs(transY_incremental(iR,iC) - median(transY_incremental(iR,2:end)))>tolerance)...
+                    || sum(ismember([iR,iC],targetRC,'rows'))...
+                needInput = 1;
+                reply = input('input adjustment [x,y]: ','s');
+            end
+            while (~isempty(reply))&&(needInput)
                 reply = str2num(reply);
-                transX(iR,iC) = transX(iR,iC) + reply(2)
-                transY(iR,iC) = transY(iR,iC) + reply(1)
+                transX_incremental(iR,iC) = transX_incremental(iR,iC) + reply(1);
+                transY_incremental(iR,iC) = transY_incremental(iR,iC) + reply(2);
+                disp([iR iC transX_incremental(iR,iC) transY_incremental(iR,iC)]);
+                % update transX transY
+                for ir = iR:nR
+                    for ic = iC:nC
+                        % because searched by row, the same row will be affected 
+                        if (ir==iR)
+                            transX(ir,ic) = transX(ir,ic) + reply(1);
+                        end
+                        % if the head column, the transY of the others will be affected  
+                        if (1 == iC)||(ir==iR)
+                            transY(ir,ic) = transY(ir,ic) + reply(2);
+                        end
+                    end
+                end
                 close all;
                 
                 img2 = img(1+transY(iR,iC)+yi:resY+transY(iR,iC)+yi,1+transX(iR,iC)+xi:resX+transX(iR,iC)+xi);
@@ -221,17 +217,171 @@ for iRC = 2:nR+nC
                     mean(cat(3,img1,img2),3,'omitnan');
                 f = myplot(img_temp);
                 set(f,'units','normalized','outerposition',[0 0 1 1]);
-                reply = input('input adjustment [r,c]: ','s');
+                reply = input('input adjustment [x,y]: ','s');
             end
+            needInput = 0;
             img = img_temp;
         end
     end
 end
 myplot(img);
-save([path_target,'\','translations_ebsd_m'],'transX','transY');
+save([path_target,'\','translations_ebsd_m'],'transX','transY','transX_incremental','transY_incremental');
+
+%% (2.0) plot manually adjusted to view
+load([path_target,'\','translations_ebsd_m']);
+[nR,nC] = size(FOV);
+
+buf = 100;          % makes blank space at the edges of the map
+xi = -min(transX(:));     % overall shift, leave 100 buffer positions for fine adjustment
+yi = -min(transY(:));
+xm = max(transX(:));    % maximum shift
+ym = max(transY(:));
+img = zeros(resY_max+yi+ym + 2*buf, resX_max+xi+xm +2*buf);
+transX = transX + buf;    % copy old for initial guess
+transY = transY + buf;
+
+for iRC = 2:nR+nC
+    for iR = 1:(iRC-1)
+        iC = iRC-iR;
+        if (iR<=nR)&&(iC<=nC)
+            close all;
+            fName = [fileNamePrefix,fileNamePrefix1,FOV{iR,iC},fileNamePrefix2]; disp(fName);
+            [~,~,~,~,~,~,~,~,~,Fit] = read_ang([path_EBSD_batch,'\',fName,fmt]);
+            img1 = find_boundary_from_ID_matrix(Fit);
+            img1(1:10,1:10)=2;
+            
+            [resY,resX] = size(img1);   % used for copy
+            
+            img2 = img(1+transY(iR,iC)+yi:resY+transY(iR,iC)+yi,1+transX(iR,iC)+xi:resX+transX(iR,iC)+xi);
+            
+            img(1+transY(iR,iC)+yi:resY+transY(iR,iC)+yi,1+transX(iR,iC)+xi:resX+transX(iR,iC)+xi) =...
+                mean(cat(3,img1,img2),3,'omitnan');
+         end
+    end
+end
+myplot(img);
+
+
+%% (2.1) interp the position.  This should be better.  It uses the adjusted position, but also 'smooth' the adjustment by interp2.
+load([path_target,'\','translations_ebsd_m']);
+[nR,nC] = size(FOV);
+
+[xq,yq] = meshgrid(1:nC,1:nR);
+indR = [1:nR; 1:nR; 1:nR]';
+indC = [ones(nR,1)*1, ones(nR,1)*2,ones(nR,1)*nC];
+ind = sub2ind([nR,nC],indR,indC);
+xx = indC;
+yy = indR;
+tX = transX(ind);
+tY = transY(ind);
+transX = round(interp2(xx,yy,tX,xq,yq));
+transY = round(interp2(xx,yy,tY,xq,yq));
+
+buf = 100;
+xi = -min(transX(:));     % overall shift, leave 100 buffer positions for fine adjustment
+yi = -min(transY(:));
+xm = max(transX(:));    % maximum shift
+ym = max(transY(:));
+img = zeros(resY_max+yi+ym + 2*buf, resX_max+xi+xm +2*buf);
+transX = transX + buf;    % copy old for initial guess
+transY = transY + buf;
+
+for iR = 1:nR
+   for iC = 1:nC
+      if (1==iR)&&(1==iC)
+          transX_incremental(iR,iC) = 0;
+          transY_incremental(iR,iC) = 0;
+      elseif (iR>1)&&(1==iC)
+          % look at top neighbor
+          transX_incremental(iR,iC) = transX(iR,iC)-transX(iR-1,iC);
+          transY_incremental(iR,iC) = transY(iR,iC)-transY(iR-1,iC);
+      elseif (iC>1)
+          % look at left neighbor
+          transX_incremental(iR,iC) = transX(iR,iC)-transX(iR,iC-1);
+          transY_incremental(iR,iC) = transY(iR,iC)-transY(iR,iC-1);
+      end
+   end
+end
+for iRC = 2:nR+nC
+    for iR = 1:(iRC-1)
+        iC = iRC-iR;
+        if (iR<=nR)&&(iC<=nC)
+            close all;
+            fName = [fileNamePrefix,fileNamePrefix1,FOV{iR,iC},fileNamePrefix2]; disp(fName);
+            [~,~,~,~,~,~,~,~,~,Fit] = read_ang([path_EBSD_batch,'\',fName,fmt]);
+            img1 = find_boundary_from_ID_matrix(Fit);
+            img1(1:10,1:10)=2;
+            
+            [resY,resX] = size(img1);   % used for copy
+            
+            img2 = img(1+transY(iR,iC)+yi:resY+transY(iR,iC)+yi,1+transX(iR,iC)+xi:resX+transX(iR,iC)+xi);
+            
+            img(1+transY(iR,iC)+yi:resY+transY(iR,iC)+yi,1+transX(iR,iC)+xi:resX+transX(iR,iC)+xi) =...
+                mean(cat(3,img1,img2),3,'omitnan');
+         end
+    end
+end
+myplot(img);
+save([path_target,'\','translations_ebsd_interp'],'transX','transY','transX_incremental','transY_incremental');
+
+%% (2.2) This is the averaged, like using a constant translation.  Basically, this shows that the stage control can introduce some unreliable drift.
+load([path_target,'\','translations_ebsd_m']);
+transX_incremental(:,1) = round(mean(transX_incremental(:,1)));
+transX_incremental(:,2) = round(mean(transX_incremental(:,2)));
+transX_incremental(:,3:end) = round(mean(mean(transX_incremental(:,3:end))));
+transY_incremental(:,2:end) = round(mean(mean(transY_incremental(:,2:end))));
+
+buf = 100;
+xi = -min(transX(:));     % overall shift, leave 100 buffer positions for fine adjustment
+yi = -min(transY(:));
+xm = max(transX(:));    % maximum shift
+ym = max(transY(:));
+img = zeros(resY_max+yi+ym + 2*buf, resX_max+xi+xm +2*buf);
+transX = transX + buf;    % copy old for initial guess
+transY = transY + buf;
+
+% incremental to transXY
+for iR = 1:nR
+   for iC = 1:nC
+      if (1==iR)&&(1==iC)
+          transX(iR,iC) = transX(iR,iC);
+          transY(iR,iC) = transY(iR,iC);
+      elseif (1==iC)&&(iR>1)
+          % look at up
+          transX(iR,iC) = transX(iR-1,iC) + transX_incremental(iR,iC);
+          transY(iR,iC) = transY(iR-1,iC) + transY_incremental(iR,iC);
+      elseif (iC>1)
+          % look at left
+          transX(iR,iC) = transX(iR,iC-1) + transX_incremental(iR,iC);
+          transY(iR,iC) = transY(iR,iC-1) + transY_incremental(iR,iC);
+      end       
+   end    
+end
+% plot
+for iRC = 2:nR+nC
+    for iR = 1:(iRC-1)
+        iC = iRC-iR;
+        if (iR<=nR)&&(iC<=nC)
+            close all;
+            fName = [fileNamePrefix,fileNamePrefix1,FOV{iR,iC},fileNamePrefix2]; disp(fName);
+            [~,~,~,~,~,~,~,~,~,Fit] = read_ang([path_EBSD_batch,'\',fName,fmt]);
+            img1 = find_boundary_from_ID_matrix(Fit);
+            img1(1:10,1:10)=2;
+            
+            [resY,resX] = size(img1);   % used for copy
+            
+            img2 = img(1+transY(iR,iC)+yi:resY+transY(iR,iC)+yi,1+transX(iR,iC)+xi:resX+transX(iR,iC)+xi);
+            
+            img(1+transY(iR,iC)+yi:resY+transY(iR,iC)+yi,1+transX(iR,iC)+xi:resX+transX(iR,iC)+xi) =...
+                mean(cat(3,img1,img2),3,'omitnan');
+         end
+    end
+end
+myplot(img);
+save([path_target,'\','translations_ebsd_just_avg'],'transX','transY','transX_incremental','transY_incremental');
 
 %% (3) adjust again for proper size
-load([path_target,'\','translations_ebsd_m']);
+load([path_target,'\','translations_ebsd_interp']);
 transX = transX - min(transX(:));
 transY = transY - min(transY(:));
 transX_incremental(1,1) = 0;

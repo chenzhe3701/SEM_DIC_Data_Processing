@@ -69,7 +69,7 @@ cpSEM_R = [7150, 1580;
 %% project it with the undeformed sample reference frame.
 
 % align EBSD position to the un-rotation-corrected map [x,y]
-tform = make_average_affine(cpEBSD,cpSEM);
+tform = make_average_transform('affine',cpEBSD,cpSEM);
 [xt,yt] = tformfwd(tform,x,y);
 % for simplification
 stepSize = 5;

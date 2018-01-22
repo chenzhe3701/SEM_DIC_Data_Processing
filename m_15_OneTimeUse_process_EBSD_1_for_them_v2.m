@@ -86,7 +86,7 @@ CI_EBSD = interp_data(x,y,CI,x_EBSD,y_EBSD,tform,'interp','nearest');
 Fit_EBSD = interp_data(x,y,Fit,x_EBSD,y_EBSD,tform,'interp','nearest');
 ID_EBSD = interp_data(x,y,ID,x_EBSD,y_EBSD,tform,'interp','nearest');
 edge_EBSD = interp_data(x,y,edge,x_EBSD,y_EBSD,tform,'interp','nearest');
-save([folder_target,'EBSD_position_aligned_to_unrotated_sample'],'phi1_EBSD','phi_EBSD','phi2_EBSD','x_EBSD','y_EBSD','IQ_EBSD','CI_EBSD','Fit_EBSD','ID_EBSD','edge_EBSD');
+save([folder_target,'\EBSD_position_aligned_to_unrotated_sample'],'phi1_EBSD','phi_EBSD','phi2_EBSD','x_EBSD','y_EBSD','IQ_EBSD','CI_EBSD','Fit_EBSD','ID_EBSD','edge_EBSD');
 
 if rotationCorrected == 1
     % align EBSD position to the rotation-corrected map [xR,yR]
@@ -107,5 +107,5 @@ if rotationCorrected == 1
     Fit_EBSD_R = interp_data(x,y,Fit,x_EBSD_R,y_EBSD_R,tform,'interp','nearest');
     ID_EBSD_R = interp_data(x,y,ID,x_EBSD_R,y_EBSD_R,tform,'interp','nearest');
     edge_EBSD_R = interp_data(x,y,edge,x_EBSD_R,y_EBSD_R,tform,'interp','nearest');
-    save([folder_target,'EBSD_position_aligned_to_rotated_sample'],'phi1_EBSD_R','phi_EBSD_R','phi2_EBSD_R','x_EBSD_R','y_EBSD_R','IQ_EBSD_R','CI_EBSD_R','Fit_EBSD_R','ID_EBSD_R','edge_EBSD_R');
+    save([folder_target,'\EBSD_position_aligned_to_rotated_sample'],'phi1_EBSD_R','phi_EBSD_R','phi2_EBSD_R','x_EBSD_R','y_EBSD_R','IQ_EBSD_R','CI_EBSD_R','Fit_EBSD_R','ID_EBSD_R','edge_EBSD_R');
 end

@@ -31,7 +31,8 @@ else
     c = circshift( ifft2( conj(fft2(F_filter_window, r1+r2-1, c1+c2-1)) .* fft2(G_img_signal, r1+r2-1, c1+c2-1) ), [(r2-1), (c2-1)] );
 end
 
-if 1==filterTF
+% if use filter
+if (exist('filterTF','var') && (1==filterTF))
     filtered = c;
     filtered = sgolayfilt(filtered,1,5,[],1);
     filtered = sgolayfilt(filtered,1,5,[],2);

@@ -4,7 +4,11 @@
 % reference:  
 % Lewis, J. P., "Fast Normalized Cross-Correlation," Industrial Light & Magic
 
-function c = normxcorr2A(T,A)
+function c = normxcorr2A(T,A, filterTF)
+
+% data type
+T = double(T);
+A = double(A);
 
 numerator = fft_xcorr2(A,T-mean(T(:)),0);
 
@@ -23,6 +27,14 @@ local_sum_A2 = local_sum(A.*A,m,n);
 denom_A = sqrt( local_sum_A2 - local_sum_A.*local_sum_A/mn);
 
 c = numerator./denom_T./denom_A;
+c(0 == denom_A) = 0;
+
+if (exist('filterTF','var') && (1==filterTF))
+    filtered = c;
+    filtered = sgolayfilt(filtered,1,5,[],1);
+    filtered = sgolayfilt(filtered,1,5,[],2);
+    c = c-filtered;
+end
 
 end
 

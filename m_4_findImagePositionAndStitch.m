@@ -59,6 +59,7 @@ col_end = 10;  % ending # of FOV cols
 iE_start = 0;
 iE_stop = 0;
 singleFOV = 1;  % This overwrite the 'iE' so the code can be conveniently applied to a single strain
+singleRow = 1;
 
 % file name format: [f1,STOP{#},'_',FOV{#,#}]
 % FOV = make_FOV_string(ri, rf, ci, cf, nDigits, sequence)
@@ -85,10 +86,11 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
     subfolderName = [subfolderNamePrefix_1,num2str(iE)];
     Oly = OVERLAY;
     for iC = col_start:col_end
-        for iR = row_start:row_end - 1
+        for iR = row_start:row_end - 1 + singleRow
             % search the down-sided picture
             pause(1);
             close all;
+            try
             fName1 = [fileNamePrefix_1,num2str(iE),fileNamePrefix_2,FOV{iR+B,iC+B}]; disp(fName1);     
             fName2 = [fileNamePrefix_1,num2str(iE),fileNamePrefix_2,FOV{iR+B+1,iC+B}]; disp(fName2);  
             I = imread([path_DIC,'\',subfolderName,'\',fName1,'.tif']);
@@ -180,7 +182,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
             transY_incremental(iR+B+1,iC+B) = yOffSet
             transX(iR+B+1,iC+B) = xOffSet  + transX(iR+B,iC+B);
             transY(iR+B+1,iC+B) = yOffSet  + transY(iR+B,iC+B);
-            
+            end
             if (iR==row_start)&&(iC<col_end)    % search the right-side picture as well
                 pause(1);
                 close all;
@@ -229,7 +231,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                             xOffSet = size(I,2) - osx_neg;
                             yOffSet = size(I,1) - osy_neg;
                         case 3
-                            [yOffSet,xOffSet] = normxcorr2A_register(J, I, [Oly*0.5, Oly*0.1,  0, 0.8*size(J,2)], [Oly*0.5, Oly*0.1,  0.8*size(I,2), 0], 1)
+                            [yOffSet,xOffSet] = normxcorr2A_register(J, I, [Oly*0.2, Oly*0.3,  0, 0.8*size(J,2)], [Oly*0.2, Oly*0.3,  0.8*size(I,2), 0], 1)
                             
                     end
                     

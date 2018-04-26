@@ -36,12 +36,12 @@ path_target = uigetdir('D:\','select a target folder to hold the stitched images
 
 % Sub folder name: [subFolderNamePrefix_1,iE], 
 % e.g., 20170430_ts5Al_02_test_e0 
-subfolderNamePrefix_1 = '';
+subfolderNamePrefix_1 = '20170430_ts5Al_02_test_e';
 
 % File name format: [fileNamePrefix_1,iE,fileNamePrefix_2='_', 'r', iR, 'c', iC]
 % e.g., 20170409_ts5Al_01_e4_r0c0
-fileNamePrefix_1 = 'WE43_T6_C1_';  
-fileNamePrefix_2 = '';
+fileNamePrefix_1 = '20170430_ts5Al_02_e';  
+fileNamePrefix_2 = '_';
 
 % resolution of images
 resX = 6144;
@@ -53,13 +53,13 @@ reduction = 10;
 
 B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
 row_start = 0; % starting # of FOV rows
-row_end = 4;
+row_end = 3;
 col_start = 0;
-col_end = 10;  % ending # of FOV cols
+col_end = 13;  % ending # of FOV cols
 iE_start = 0;
 iE_stop = 0;
-singleFOV = 1;  % This overwrite the 'iE' so the code can be conveniently applied to a single strain
-singleRow = 1;
+singleFOV = 0;  % This overwrite the 'iE' so the code can be conveniently applied to a single strain
+singleRow = 0;
 
 % file name format: [f1,STOP{#},'_',FOV{#,#}]
 % FOV = make_FOV_string(ri, rf, ci, cf, nDigits, sequence)
@@ -76,7 +76,7 @@ transY = zeros(row_end+B,col_end+B);
 clear specialRC;    % but can define special cases
 corrMethod = 3;     % 1 = fft, 2 = normxcorr2
 cutEdge = 0;    % cut edge = 1, vs average=0, in blending
-specialRC = [2,5,3,5,-12,3863];
+
 
 %%
 for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  ----------------------------------------------
@@ -129,7 +129,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                         xOffSet = size(I,2) - osx_neg;  % positive offset, J's upper-left coner's offset wrt I's upper-left corner
                         yOffSet = size(I,1) - osy_neg;
                     case 3
-                        [yOffSet,xOffSet] = normxcorr2A_register(J, I, [0, 0.8*size(J,1),  Oly*0, 0], [0.8*size(I,1), 0,  Oly*0, 0], 1)
+                        [yOffSet,xOffSet] = normxcorr2A_register(J, I, [0, 0.7*size(J,1),  Oly*0, 0], [0.7*size(I,1), 0,  Oly*0, 0], 1)
                 end
                 
                 if DRAWFIGURE > 0
@@ -231,7 +231,7 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
                             xOffSet = size(I,2) - osx_neg;
                             yOffSet = size(I,1) - osy_neg;
                         case 3
-                            [yOffSet,xOffSet] = normxcorr2A_register(J, I, [Oly*0.2, Oly*0.3,  0, 0.8*size(J,2)], [Oly*0.2, Oly*0.3,  0.8*size(I,2), 0], 1)
+                            [yOffSet,xOffSet] = normxcorr2A_register(J, I, [0, Oly*0,  0, 0.7*size(J,2)*0], [Oly*0, 0,  0.7*size(I,2)*0, 0], 1);
                             
                     end
                     

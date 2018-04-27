@@ -16,8 +16,8 @@ pathRC = uigetdir('E:\PureMg_T1_insitu_tension\byFov\','path to rc');
 pathSE = uigetdir('E:\PureMg_T1_insitu_tension\','path to se');
 f1 = 'PureMg_s';
 f2 = '_';
-FORMAT = '.tif';    % '.mat'  or  '.tif'
-copydirection = [3 2];    % Copy direction [from to].  1=all, 2=RC, 3=SE
+FORMAT = '.mat';    % '.mat'  or  '.tif'
+copydirection = [2 1];    % Copy direction [from to].  1=all, 2=RC, 3=SE
 
 B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
 row_start = 0;  % starting # of FOV rows
@@ -42,15 +42,9 @@ for iR = row_start:row_end
             folderSE = [pathSE,'\','s',num2str(iE)];                 % if necessary, change the format of the folder name ------------------
             mkdir(folderSE);
             
-            %             % A simple code if you have more digits to represent elongation leve.  Disable for now.
-            %             if iE+1<10
-            %                 STOP = ['00',num2str(iE+1)];
-            %             else
-            %                 STOP = ['0',num2str(iE+1)];
-            %             end
-            
-            % can change s0 to s00 in order to do DIC. But can change it back when
-            % copying dic.mat, so that the others can be kept the same.
+            % A code if you have more digits to represent elongation leve:
+            % Can change 's0' to 's00' in order to do DIC. 
+            % But can change it back when copying dic.mat, so that the other steps/codes can be kept the same.   
             fNameAll = [f1,num2str(iE),'_',FOV{iR+B,iC+B},FORMAT];
             fNameRC = [f1,num2str(iE,'%.2d'),'_',FOV{iR+B,iC+B},FORMAT];
             fNameSE = [f1,num2str(iE),'_',FOV{iR+B,iC+B},FORMAT];

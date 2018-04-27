@@ -36,11 +36,11 @@
 % (3) If use the local method, you can also define a special sequence to
 % stitch each FOVs.
 
-[f,p] = uigetfile('D:\Marissa_test_20170430_renamed_cropped_sequential_rotated\translations_searched_vertical_stop_0.mat','select translation');
+[f,p] = uigetfile('E:\PureMg_T1_insitu_tension\stitched_img\translations_searched_vertical_stop_0.mat','select translation');
 load([p,f]);    % load translation data
 iE_ref = 0;    % elongation number for reference images, default=0
 
-dic_step = 5;       % step size in DIC analysis
+dic_step = 10;       % step size in DIC analysis
 
 % transX = [];    % can manual input
 % transY = [];
@@ -52,11 +52,11 @@ transY_incremental = dic_step * round(transY_incremental/dic_step);
 
 B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
 row_begin = 0; % starting # of FOV rows
-row_end = 3;
+row_end = 4;
 col_begin = 0;
-col_end = 13;  % ending # of FOV cols
+col_end = 6;  % ending # of FOV cols
 e_begin = 0;
-e_end = 6;
+e_end = 12;
 
 FOV = make_FOV_string(abs(B-1), row_end, abs(B-1), col_end, 1, 'rc');
 
@@ -90,19 +90,20 @@ end
 
 % File name format: [fileNamePrefix_1,iE,fileNamePrefix_2='_', 'r', iR, 'c', iC]
 % e.g., 20170409_ts5Al_01_e4_r0c0
-f1 = '20170430_ts5Al_02_e'; f2='_';
+f1 = 'PureMg_s'; f2='_';
 
-directory_s = uigetdir('D:\Marissa_test_20170430\4]_20170430_ts5Al_02 tensile test_non_incremental_DIC_rotated','choose a single directory that directly contains all the DIC mat files');
-directory_n = uigetdir('D:\','choose the new/destination directory');
+directory_s = uigetdir('E:\PureMg_T1_insitu_tension\allFov','choose a single directory that directly contains all the DIC mat files');
+directory_n = uigetdir('E:\PureMg_T1_insitu_tension\stitched_DIC','choose the new/destination directory');
 
 % Basically, this is the smallest x/y position in each FOV.
-% For Vic2D-6 this should be 0.
+% For Vic2D-6 this should be 0. (Zhe Chen, 2018-04-28, this statement should be corrected)
+% For Vic2D-6, this value looks like to be xyi = mod((subsetSize-1)/2,stepSize).  (Zhe Chen, modified on 2018-04-28)  
 % For Vic2D-2009, with subset=21, step = 5, you could have x=12,17,..., so
 % in this case xyi=2.  Then also you should have the same x=12,17,..., for
 % all your FOVs.
-xyi = 0;
+xyi = 7;
 
-resX = 6144;            % res of each image
+resX = 4096;            % res of each image
 resY = 4096;
 
 % This takes care of the condition when you have a translation<0. 
@@ -121,7 +122,7 @@ reduce_step = 1;    % reduce data size, data point step size.
 % 'xyuv' for raw DIC data, 'XYUV' for distortion corrected, 'Lagrange' for
 % distortion corrected and strain calculated.
 VarLetter = 'xyuv';
-CUTEDGE = 1;        % cut edge or not?
+CUTEDGE = 0;        % cut edge or not?
 OVERLAY = 200;      % how many overlay to give
 
 pts_considered = 10;      % how many points in each row/column to determine u/v shift
@@ -187,7 +188,7 @@ for iE = e_begin:e_end
                 
                 % [nR,nC] are for data points. Index of this patch in the global matrix is [Ri:Rf, Ci:Cf]
                 [nR,nC] = size(fData.sigma);
-                [~,Ci] = min(abs(fData.x(1)+transX(iR+B,iC+B) - X(1,:)));   % find starting point of patch in whole matrix.
+                [~,Ci] = min(abs(fData.x(1)+transX(iR+B,iC+B) - X(1,:)));   % find starting point of patch in whole matrix. [Note 2018-04-27], this is the 'nearest-neighbor interpolation' part, and this should be improved.
                 [~,Ri] = min(abs(fData.y(1)+transY(iR+B,iC+B) - Y(:,1)));
                 Cf = Ci + nC - 1;
                 Rf = Ri + nR - 1;
@@ -380,7 +381,7 @@ for iE = e_begin:e_end
         uTrans2 = transpose(reshape(uTrans2-uTrans2(1),nC_FOV,nR_FOV));
         vTrans2 = inv(KA'*KA)*KA'*Yv;
         vTrans2 = transpose(reshape(vTrans2-vTrans2(1),nC_FOV,nR_FOV));
-        save([directory_n,'\','methodGlobal_uvTrans_e',STOP{iE+B}],'uTrans','vTrans','uTrans1','vTrans1','uTrans2','vTrans2');
+        save([directory_n,'\','methodGlobal_uvTrans_s',STOP{iE+B}],'uTrans','vTrans','uTrans1','vTrans1','uTrans2','vTrans2');
     end
     
     
@@ -568,7 +569,7 @@ for iE = e_begin:e_end
     sigma(isnan(sigma)) = -1;
     
     if strcmpi(stitch_method,'local')
-        save([directory_n,'\','methodLocal_uvTrans_e',STOP{iE+B}],'uTrans','vTrans');
+        save([directory_n,'\','methodLocal_uvTrans_s',STOP{iE+B}],'uTrans','vTrans');
     end
     
     if reduce_step ~= 1

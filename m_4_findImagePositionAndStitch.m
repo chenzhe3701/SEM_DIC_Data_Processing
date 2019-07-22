@@ -1,6 +1,3 @@
-% zheshigeiwodenvshenxiede. suiranjiandan, danshiwoxiangweitazuoxieshiqing.
-%
-% combines the code for step 4 and 5 for Marissa's images.
 % chenzhe, 20170412 18:56
 %
 % chenzhe, 2017-05-09, make it specific for these iamge settings
@@ -31,8 +28,8 @@
 DRAWFIGURE = 0;
 
 % Path for images and dic data (dic data usually in the same folder as the images)
-path_DIC = uigetdir('E:\PureMg_C1_insitu_compression\SE\','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
-path_target = uigetdir('E:\PureMg_C1_insitu_compression\stitched_img\','select a target folder to hold the stitched images and translation data');
+path_DIC = uigetdir('E:\Ti7Al_E1_insitu_tension\Ti7Al_E1_Images\SE\','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
+path_target = uigetdir('E:\Ti7Al_E1_insitu_tension\Ti7Al_E1_Images\stitched_img\','select a target folder to hold the stitched images and translation data');
 
 % Sub folder name: [subFolderNamePrefix_1,iE], 
 % e.g., 20170430_ts5Al_02_test_e0 
@@ -40,7 +37,7 @@ subfolderNamePrefix_1 = 's';
 
 % File name format: [fileNamePrefix_1,iE,fileNamePrefix_2='_', 'r', iR, 'c', iC]
 % e.g., 20170409_ts5Al_01_e4_r0c0
-fileNamePrefix_1 = 'MgC1_s';  
+fileNamePrefix_1 = 'Ti7Al_E1_s';  
 fileNamePrefix_2 = '_';
 
 % resolution of images
@@ -53,9 +50,9 @@ reduction = 10;
 
 B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
 row_start = 0; % starting # of FOV rows
-row_end = 13;
+row_end = 7;
 col_start = 0;
-col_end = 13;  % ending # of FOV cols
+col_end = 7;  % ending # of FOV cols
 iE_start = 0;
 iE_stop = 0;
 singleFOV = 0;  % This overwrite the 'iE' so the code can be conveniently applied to a single strain

@@ -1,6 +1,3 @@
-% zheshigeiwodenvshenxiede. suiranjiandan, danshiwoxiangweitazuoxieshiqing.
-%
-% combines the code for step 4 and 5 for Marissa's images.
 % chenzhe, 20170412 18:56
 %
 % chenzhe, 2017-05-09, make it specific for these iamge settings

@@ -1,4 +1,3 @@
-% move Marissa's data
 % chenzhe, 2017-04-05
 % chenzhe, 2017-05-25 make it move between all three folders.
 %
@@ -11,21 +10,21 @@
 % (4) You can modify the appropriate folder/subfolder/filename format, and
 % directions of copying.
 
-pathAll = uigetdir('D:\','path all');
-pathRC = uigetdir('D:\Marissa_test_20170430_renamed_cropped_byFOV_rotated\','path to rc');
-pathSE = uigetdir('D:\Marissa_test_20170430_renamed_cropped_sequential_rotated\','path to se');
-f1 = '20170430_ts5Al_02_e';
+pathAll = uigetdir('E:\Ti7Al_E1_insitu_tension\Ti7Al_E1_Images\All','path all');
+pathRC = uigetdir('E:\Ti7Al_E1_insitu_tension\Ti7Al_E1_Images\RC','path to rc');
+pathSE = uigetdir('E:\Ti7Al_E1_insitu_tension\Ti7Al_E1_Images\SE','path to se');
+f1 = 'Ti7Al_E1_S';
 f2 = '_';
 FORMAT = '.mat';    % or '.tif'
-copydirection = [2 3];    % Copy direction [from to].  1=all, 2=RC, 3=SE
+copydirection = [2,1];    % Copy direction [from to].  1=all, 2=RC, 3=SE
 
 B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
 row_start = 0;  % starting # of FOV rows
-row_end = 3;
+row_end = 7;
 col_start = 0;
-col_end = 13;    % ending # of FOV cols
+col_end = 7;    % ending # of FOV cols
 e_start = 0;
-e_stop = 6;     % elongation #
+e_stop = 7;     % elongation #
 
 % file name format: [f1,STOP{#},'_',FOV{#,#}]
 % FOV = make_FOV_string(ri, rf, ci, cf, nDigits, sequence)
@@ -40,7 +39,7 @@ for iR = row_start:row_end
         folderRC = [pathRC,'\','r',num2str(iR),'c',num2str(iC)];    % if necessary, change the format of the folder name ------------------
         mkdir(folderRC);    
         for iE = e_start:e_stop
-            folderSE = [pathSE,'\','e',num2str(iE)];                 % if necessary, change the format of the folder name ------------------
+            folderSE = [pathSE,'\','s',num2str(iE)];                 % if necessary, change the format of the folder name ------------------
             mkdir(folderSE);                
             
 %             % A simple code if you have more digits to represent elongation leve.  Disable for now.

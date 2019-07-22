@@ -1,11 +1,4 @@
 % chenzhezju 2017-5-24
-% zju, Zhejiang University, est 1897-5-21, 3rd-ranked university
-% Chu Kochen Honors College, 1st-rank college in zju
-% Mixed Class, 1st-ranked class in CKC colleage
-% cz, ranked 1st in 4/5 major classes in the 1st semester but the curse of
-% Linear Algebra dominates (probably) the rest of this idiot's life.
-% Chairman Mao said: good good study, day day up.
-
 % method 1:
 % (1) calculate rotated value, (2) interp to intermediate
 % position, (3) intermediate position can simply be pasted to rotated position

@@ -1,6 +1,6 @@
-% gei nv shen
+% 2017-04-03.
 %
-% 2017-04-03, to Marissa:
+% Note:
 % (x=0, y=0) at upper left corner.
 % x0: shift (in pixel) of each image in x position wrt 'r0c0'
 % y0: shift (in pixel) of each image in x position wrt 'r0c0'
@@ -36,7 +36,7 @@
 % (3) If use the local method, you can also define a special sequence to
 % stitch each FOVs.
 
-[f,p] = uigetfile('D:\Marissa_test_20170430_renamed_cropped_sequential_rotated\translations_searched_vertical_stop_0.mat','select translation');
+[f,p] = uigetfile('E:\Ti7Al_E1_insitu_tension\Ti7Al_E1_Images\stitched_img\translations_searched_vertical_stop_0.mat','select translation');
 load([p,f]);    % load translation data
 iE_ref = 0;    % elongation number for reference images, default=0
 
@@ -52,11 +52,11 @@ transY_incremental = dic_step * round(transY_incremental/dic_step);
 
 B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
 row_begin = 0; % starting # of FOV rows
-row_end = 3;
+row_end = 7;
 col_begin = 0;
-col_end = 13;  % ending # of FOV cols
+col_end = 7;  % ending # of FOV cols
 e_begin = 0;
-e_end = 6;
+e_end = 7;
 
 FOV = make_FOV_string(abs(B-1), row_end, abs(B-1), col_end, 1, 'rc');
 
@@ -90,19 +90,18 @@ end
 
 % File name format: [fileNamePrefix_1,iE,fileNamePrefix_2='_', 'r', iR, 'c', iC]
 % e.g., 20170409_ts5Al_01_e4_r0c0
-f1 = '20170430_ts5Al_02_e'; f2='_';
+f1 = 'Ti7Al_E1_S'; f2='_';
 
-directory_s = uigetdir('D:\Marissa_test_20170430\4]_20170430_ts5Al_02 tensile test_non_incremental_DIC_rotated','choose a single directory that directly contains all the DIC mat files');
-directory_n = uigetdir('D:\','choose the new/destination directory');
+directory_s = uigetdir('E:\Ti7Al_E1_insitu_tension\Ti7Al_E1_Images\All','choose a single directory that directly contains all the DIC mat files');
+directory_n = uigetdir('E:\Ti7Al_E1_insitu_tension\Ti7Al_E1_Images\stitched_DIC','choose the new/destination directory');
 
 % Basically, this is the smallest x/y position in each FOV.
-% For Vic2D-6 this should be 0.
-% For Vic2D-2009, with subset=21, step = 5, you could have x=12,17,..., so
+% For example, with subset=21, step = 5, you could have x=12,17,..., so
 % in this case xyi=2.  Then also you should have the same x=12,17,..., for
 % all your FOVs.
-xyi = 0;
+xyi = 2;
 
-resX = 6144;            % res of each image
+resX = 4096;            % res of each image
 resY = 4096;
 
 % This takes care of the condition when you have a translation<0. 

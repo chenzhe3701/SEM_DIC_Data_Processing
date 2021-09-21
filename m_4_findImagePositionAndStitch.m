@@ -28,8 +28,8 @@
 DRAWFIGURE = 0;
 
 % Path for images and dic data (dic data usually in the same folder as the images)
-path_DIC = uigetdir('E:\Ti7Al_E1_insitu_tension\Ti7Al_E1_Images\SE\','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
-path_target = uigetdir('E:\Ti7Al_E1_insitu_tension\Ti7Al_E1_Images\stitched_img\','select a target folder to hold the stitched images and translation data');
+path_DIC = uigetdir('E:\zhec umich Drive\2021-09-11 UM134_Mg_D3 insitu SEM-DIC\SEM Data\SE builtin','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
+path_target = uigetdir('E:\zhec umich Drive\2021-09-11 UM134_Mg_D3 insitu SEM-DIC\SEM Data\stitched images builtin','select a target folder to hold the stitched images and translation data');
 
 % Sub folder name: [subFolderNamePrefix_1,iE], 
 % e.g., 20170430_ts5Al_02_test_e0 
@@ -37,7 +37,7 @@ subfolderNamePrefix_1 = 's';
 
 % File name format: [fileNamePrefix_1,iE,fileNamePrefix_2='_', 'r', iR, 'c', iC]
 % e.g., 20170409_ts5Al_01_e4_r0c0
-fileNamePrefix_1 = 'Ti7Al_E1_s';  
+fileNamePrefix_1 = 'UM134_Mg_D3_s';  
 fileNamePrefix_2 = '_';
 
 % resolution of images
@@ -50,11 +50,11 @@ reduction = 10;
 
 B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
 row_start = 0; % starting # of FOV rows
-row_end = 7;
+row_end = 1;
 col_start = 0;
-col_end = 7;  % ending # of FOV cols
+col_end = 1;  % ending # of FOV cols
 iE_start = 0;
-iE_stop = 0;
+iE_stop = 7;
 singleFOV = 0;  % This overwrite the 'iE' so the code can be conveniently applied to a single strain
 singleRow = 0;
 
@@ -88,98 +88,99 @@ for iE = iE_start:iE_stop        % 'e#' in the file name, i.e., stop/pause #  --
             pause(1);
             close all;
             try
-            fName1 = [fileNamePrefix_1,num2str(iE),fileNamePrefix_2,FOV{iR+B,iC+B}]; disp(fName1);     
-            fName2 = [fileNamePrefix_1,num2str(iE),fileNamePrefix_2,FOV{iR+B+1,iC+B}]; disp(fName2);  
-            I = imread([path_DIC,'\',subfolderName,'\',fName1,'.tif']);
-            J = imread([path_DIC,'\',subfolderName,'\',fName2,'.tif']);
-            stitch_direction = 1;   % 1 for up-down, 2 for left-right
-            % For debug
-            if DRAWFIGURE > 1
-                f1 = figure;imshowpair(I,J,'montage');
-            end
-                        
-            try
-                switch corrMethod
-                    case 1
-                        [yOffSet,xOffSet] = fft_register(I,J,'d',[0.7*size(I,1)*0, 0,  Oly*0, 0], [0, 0.7*size(J,1)*0,  Oly*0, 0], 1);         % could change this accordingly, be careful with your choice of parameter ---------------------------
-                    case 2
-                        % initially crop a small region to detect
-                        yi = size(I,1) - Oly; % xi, yi are zero-based.
-                        xi = round(size(I,2)/2-Oly/2);
-                        
-                        Iprime = imcrop(I,[xi,yi,Oly,Oly]);
-                        x_neg = size(I,2)-xi;   % Iprime wrt lower right corner of I
-                        y_neg = size(I,1)-yi;
-                        
-                        c = fft_xcorr2(double(J), double(Iprime), 1);
-                        
-                        if DRAWFIGURE > 1
-                            figure;surf(c);shading flat; set(gca,'ydir','reverse');view(0,90);
-                        end
-                        [ypeak, xpeak] = find(c == max(c(:)));
-                        xOffSet_J = xpeak-size(Iprime,2);
-                        yOffSet_J = ypeak-size(Iprime,1);
-                        
-                        osx_neg = x_neg + xOffSet_J;    % OffSet_Negative, J's upper left corner's offset wrt I's lower-right corner
-                        osy_neg = y_neg + yOffSet_J;
-                        
-                        xOffSet = size(I,2) - osx_neg;  % positive offset, J's upper-left coner's offset wrt I's upper-left corner
-                        yOffSet = size(I,1) - osy_neg;
-                    case 3
-                        [yOffSet,xOffSet] = normxcorr2A_register(J, I, [0, 0.7*size(J,1),  Oly*0, 0], [0.7*size(I,1), 0,  Oly*0, 0], 1)
-                end
-                
-                if DRAWFIGURE > 0
-                    figure;imshowpair(I,J,'montage');
-                    imrect(gca, [xi, yi, size(Iprime,2), size(Iprime,1)]);
-                    imrect(gca, [size(I,2)+xOffSet_J, yOffSet_J, size(Iprime,2), size(Iprime,1)]);
-                end
-                
-                if (stitch_direction==1) && ( (yOffSet > size(I,1))||(abs(xOffSet)>500) )
-                    error();
-                end
-                
-            catch
-                % get rectangular region manually
-                try close(f1); catch ; end
-                f1 = figure;set(f1,'name','select an area to match, prefer on image I (left)');imshowpair(I,J,'montage');
-                rect = round(getrect(gcf));
-                xi = rect(1); yi = rect(2); OlyX = rect(3); OlyY = rect(4);
-                xi = mod(xi-size(I,2),size(I,2));
-                OlyX = mod(OlyX-size(I,2),size(I,2));
-                yi = mod(yi-size(I,1),size(I,1));
-                OlyY = mod(OlyY-size(I,1),size(I,1));
-                Iprime = imcrop(I,[xi,yi,OlyX,OlyY]);
-                x_neg = size(I,2)-xi;   % Iprime wrt lower right corner of I
-                y_neg = size(I,1)-yi;
-                
-                c = fft_xcorr2(double(J), double(Iprime), 1);
+                fName1 = [fileNamePrefix_1,num2str(iE),fileNamePrefix_2,FOV{iR+B,iC+B}]; disp(fName1);
+                fName2 = [fileNamePrefix_1,num2str(iE),fileNamePrefix_2,FOV{iR+B+1,iC+B}]; disp(fName2);
+                I = imread([path_DIC,'\',subfolderName,'\',fName1,'.tif']);
+                J = imread([path_DIC,'\',subfolderName,'\',fName2,'.tif']);
+                stitch_direction = 1;   % 1 for up-down, 2 for left-right
+                % For debug
                 if DRAWFIGURE > 1
-                    figure;surf(c);shading flat; set(gca,'ydir','reverse');view(0,90);
+                    f1 = figure;imshowpair(I,J,'montage');
                 end
-                [ypeak, xpeak] = find(c == max(c(:)));
-                xOffSet_J = xpeak-size(Iprime,2);
-                yOffSet_J = ypeak-size(Iprime,1);
                 
-                osx_neg = x_neg + xOffSet_J;    % J's upper left corner's offset wrt I's lower-right corner
-                osy_neg = y_neg + yOffSet_J;
-                
-                xOffSet = size(I,2) - osx_neg;
-                yOffSet = size(I,1) - osy_neg;
-                
-                if DRAWFIGURE > 0
-                    figure;imshowpair(I,J,'montage');
-                    imrect(gca, [xi, yi, size(Iprime,2), size(Iprime,1)]);
-                    imrect(gca, [size(I,2)+xOffSet_J, yOffSet_J, size(Iprime,2), size(Iprime,1)]);
+                try
+                    switch corrMethod
+                        case 1
+                            [yOffSet,xOffSet] = fft_register(I,J,'d',[0.7*size(I,1)*0, 0,  Oly*0, 0], [0, 0.7*size(J,1)*0,  Oly*0, 0], 1);         % could change this accordingly, be careful with your choice of parameter ---------------------------
+                        case 2
+                            % initially crop a small region to detect
+                            yi = size(I,1) - Oly; % xi, yi are zero-based.
+                            xi = round(size(I,2)/2-Oly/2);
+                            
+                            Iprime = imcrop(I,[xi,yi,Oly,Oly]);
+                            x_neg = size(I,2)-xi;   % Iprime wrt lower right corner of I
+                            y_neg = size(I,1)-yi;
+                            
+                            c = fft_xcorr2(double(J), double(Iprime), 1);
+                            
+                            if DRAWFIGURE > 1
+                                figure;surf(c);shading flat; set(gca,'ydir','reverse');view(0,90);
+                            end
+                            [ypeak, xpeak] = find(c == max(c(:)));
+                            xOffSet_J = xpeak-size(Iprime,2);
+                            yOffSet_J = ypeak-size(Iprime,1);
+                            
+                            osx_neg = x_neg + xOffSet_J;    % OffSet_Negative, J's upper left corner's offset wrt I's lower-right corner
+                            osy_neg = y_neg + yOffSet_J;
+                            
+                            xOffSet = size(I,2) - osx_neg;  % positive offset, J's upper-left coner's offset wrt I's upper-left corner
+                            yOffSet = size(I,1) - osy_neg;
+                        case 3
+                            [yOffSet,xOffSet] = normxcorr2A_register(J, I, [0, 0.7*size(J,1),  Oly*0, 0], [0.7*size(I,1), 0,  Oly*0, 0], 1)
+                    end
+                    
+                    if DRAWFIGURE > 0
+                        figure;imshowpair(I,J,'montage');
+                        imrect(gca, [xi, yi, size(Iprime,2), size(Iprime,1)]);
+                        imrect(gca, [size(I,2)+xOffSet_J, yOffSet_J, size(Iprime,2), size(Iprime,1)]);
+                    end
+                    
+                    if (stitch_direction==1) && ( (yOffSet > size(I,1))||(abs(xOffSet)>500) )
+                        error();
+                    end
+                    
+                catch
+                    % get rectangular region manually
+                    try close(f1); catch ; end
+                    f1 = figure;set(f1,'name','select an area to match, prefer on image I (left)');imshowpair(I,J,'montage');
+                    rect = round(getrect(gcf));
+                    xi = rect(1); yi = rect(2); OlyX = rect(3); OlyY = rect(4);
+                    xi = mod(xi-size(I,2),size(I,2));
+                    OlyX = mod(OlyX-size(I,2),size(I,2));
+                    yi = mod(yi-size(I,1),size(I,1));
+                    OlyY = mod(OlyY-size(I,1),size(I,1));
+                    Iprime = imcrop(I,[xi,yi,OlyX,OlyY]);
+                    x_neg = size(I,2)-xi;   % Iprime wrt lower right corner of I
+                    y_neg = size(I,1)-yi;
+                    
+                    c = fft_xcorr2(double(J), double(Iprime), 1);
+                    if DRAWFIGURE > 1
+                        figure;surf(c);shading flat; set(gca,'ydir','reverse');view(0,90);
+                    end
+                    [ypeak, xpeak] = find(c == max(c(:)));
+                    xOffSet_J = xpeak-size(Iprime,2);
+                    yOffSet_J = ypeak-size(Iprime,1);
+                    
+                    osx_neg = x_neg + xOffSet_J;    % J's upper left corner's offset wrt I's lower-right corner
+                    osy_neg = y_neg + yOffSet_J;
+                    
+                    xOffSet = size(I,2) - osx_neg;
+                    yOffSet = size(I,1) - osy_neg;
+                    
+                    if DRAWFIGURE > 0
+                        figure;imshowpair(I,J,'montage');
+                        imrect(gca, [xi, yi, size(Iprime,2), size(Iprime,1)]);
+                        imrect(gca, [size(I,2)+xOffSet_J, yOffSet_J, size(Iprime,2), size(Iprime,1)]);
+                    end
+                    
                 end
-
+                
+                transX_incremental(iR+B+1,iC+B) = xOffSet
+                transY_incremental(iR+B+1,iC+B) = yOffSet
+                transX(iR+B+1,iC+B) = xOffSet  + transX(iR+B,iC+B);
+                transY(iR+B+1,iC+B) = yOffSet  + transY(iR+B,iC+B);
             end
             
-            transX_incremental(iR+B+1,iC+B) = xOffSet
-            transY_incremental(iR+B+1,iC+B) = yOffSet
-            transX(iR+B+1,iC+B) = xOffSet  + transX(iR+B,iC+B);
-            transY(iR+B+1,iC+B) = yOffSet  + transY(iR+B,iC+B);
-            end
             if (iR==row_start)&&(iC<col_end)    % search the right-side picture as well
                 pause(1);
                 close all;

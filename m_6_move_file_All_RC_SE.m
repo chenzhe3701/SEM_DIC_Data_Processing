@@ -10,19 +10,19 @@
 % (4) You can modify the appropriate folder/subfolder/filename format, and
 % directions of copying.
 
-pathAll = uigetdir('E:\Ti7Al_E1_insitu_tension\Ti7Al_E1_Images\All','path all');
-pathRC = uigetdir('E:\Ti7Al_E1_insitu_tension\Ti7Al_E1_Images\RC','path to rc');
-pathSE = uigetdir('E:\Ti7Al_E1_insitu_tension\Ti7Al_E1_Images\SE','path to se');
-f1 = 'Ti7Al_E1_S';
+pathAll = uigetdir('E:\zhec umich Drive\2021-09-11 UM134_Mg_D3 insitu SEM-DIC\SEM Data\All','path all');
+pathRC = uigetdir('E:\zhec umich Drive\2021-09-11 UM134_Mg_D3 insitu SEM-DIC\SEM Data\RC builtin','path to rc');
+pathSE = uigetdir('E:\zhec umich Drive\2021-09-11 UM134_Mg_D3 insitu SEM-DIC\SEM Data\SE builtin','path to se');
+f1 = 'UM134_Mg_D3_s';
 f2 = '_';
 FORMAT = '.mat';    % or '.tif'
 copydirection = [2,1];    % Copy direction [from to].  1=all, 2=RC, 3=SE
 
 B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
 row_start = 0;  % starting # of FOV rows
-row_end = 7;
+row_end = 1;
 col_start = 0;
-col_end = 7;    % ending # of FOV cols
+col_end = 1;    % ending # of FOV cols
 e_start = 0;
 e_stop = 7;     % elongation #
 

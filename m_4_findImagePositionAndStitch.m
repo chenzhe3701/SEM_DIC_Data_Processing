@@ -28,8 +28,8 @@
 DRAWFIGURE = 0;
 
 % Path for images and dic data (dic data usually in the same folder as the images)
-path_DIC = uigetdir('E:\zhec umich Drive\2021-09-11 UM134_Mg_D3 insitu SEM-DIC\SEM Data\SE builtin','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
-path_target = uigetdir('E:\zhec umich Drive\2021-09-11 UM134_Mg_D3 insitu SEM-DIC\SEM Data\stitched images builtin','select a target folder to hold the stitched images and translation data');
+path_DIC = uigetdir('E:\zhec umich Drive\2021-10-01 MgAl insitu SEM-DIC\SEM Data\SE','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
+path_target = uigetdir('E:\zhec umich Drive\2021-10-01 MgAl insitu SEM-DIC\SEM Data\stitched images','select a target folder to hold the stitched images and translation data');
 
 % Sub folder name: [subFolderNamePrefix_1,iE], 
 % e.g., 20170430_ts5Al_02_test_e0 
@@ -37,7 +37,7 @@ subfolderNamePrefix_1 = 's';
 
 % File name format: [fileNamePrefix_1,iE,fileNamePrefix_2='_', 'r', iR, 'c', iC]
 % e.g., 20170409_ts5Al_01_e4_r0c0
-fileNamePrefix_1 = 'UM134_Mg_D3_s';  
+fileNamePrefix_1 = 'Mg4Al_s';  
 fileNamePrefix_2 = '_';
 
 % resolution of images
@@ -50,11 +50,11 @@ reduction = 10;
 
 B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
 row_start = 0; % starting # of FOV rows
-row_end = 1;
+row_end = 3;
 col_start = 0;
-col_end = 1;  % ending # of FOV cols
+col_end = 4;  % ending # of FOV cols
 iE_start = 0;
-iE_stop = 7;
+iE_stop = 3;
 singleFOV = 0;  % This overwrite the 'iE' so the code can be conveniently applied to a single strain
 singleRow = 0;
 

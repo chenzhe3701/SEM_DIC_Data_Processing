@@ -36,7 +36,7 @@
 % (3) If use the local method, you can also define a special sequence to
 % stitch each FOVs.
 
-[f,p] = uigetfile('E:\zhec umich Drive\2021-09-11 UM134_Mg_D3 insitu SEM-DIC\SEM Data\stitched images builtin\translations_searched_vertical_stop_0.mat','select translation');
+[f,p] = uigetfile('E:\zhec umich Drive\2021-10-01 MgAl insitu SEM-DIC\SEM Data\stitched images\translations_searched_vertical_stop_0.mat','select translation');
 load([p,f]);    % load translation data
 iE_ref = 0;    % elongation number for reference images, default=0
 
@@ -52,11 +52,11 @@ transY_incremental = dic_step * round(transY_incremental/dic_step);
 
 B = 1;   % 'B' for 'base', to handle if it's 0/1-based index.  But B=1 for 0-based. B=0 for 1-based.  When iR, iC is used with FOV, transX, ... add this B.
 row_begin = 0; % starting # of FOV rows
-row_end = 1;
+row_end = 3;
 col_begin = 0;
-col_end = 1;  % ending # of FOV cols
+col_end = 4;  % ending # of FOV cols
 e_begin = 0;
-e_end = 7;
+e_end = 3;
 
 FOV = make_FOV_string(abs(B-1), row_end, abs(B-1), col_end, 1, 'rc');
 
@@ -90,10 +90,10 @@ end
 
 % File name format: [fileNamePrefix_1,iE,fileNamePrefix_2='_', 'r', iR, 'c', iC]
 % e.g., 20170409_ts5Al_01_e4_r0c0
-f1 = 'UM134_Mg_D3_s'; f2='_';
+f1 = 'Mg4Al_s'; f2='_';
 
-directory_s = uigetdir('E:\zhec umich Drive\2021-09-11 UM134_Mg_D3 insitu SEM-DIC\SEM Data\All','choose a single directory that directly contains all the DIC mat files');
-directory_n = uigetdir('E:\zhec umich Drive\2021-09-11 UM134_Mg_D3 insitu SEM-DIC\SEM Data\stitched_DIC_builtin','choose the new/destination directory');
+directory_s = uigetdir('E:\zhec umich Drive\2021-10-01 MgAl insitu SEM-DIC\SEM Data\All','choose a single directory that directly contains all the DIC mat files');
+directory_n = uigetdir('E:\zhec umich Drive\2021-10-01 MgAl insitu SEM-DIC\SEM Data\stitched DIC','choose the new/destination directory');
 
 % Basically, this is the smallest x/y position in each FOV.
 % For example, with subset=21, step = 5, you could have x=12,17,..., so

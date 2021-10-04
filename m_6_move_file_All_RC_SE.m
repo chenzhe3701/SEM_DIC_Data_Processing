@@ -10,9 +10,9 @@
 % (4) You can modify the appropriate folder/subfolder/filename format, and
 % directions of copying.
 
-pathAll = uigetdir('E:\zhec umich Drive\2021-10-01 MgAl insitu SEM-DIC\SEM Data\All','path all');
-pathRC = uigetdir('E:\zhec umich Drive\2021-10-01 MgAl insitu SEM-DIC\SEM Data\RC','path to rc');
-pathSE = uigetdir('E:\zhec umich Drive\2021-10-01 MgAl insitu SEM-DIC\SEM Data\SE','path to se');
+pathAll = uigetdir('E:\zhec umich Drive\2021-10-01 Mg4Al_m1 insitu SEM-DIC\SEM Data\All','path all');
+pathRC = uigetdir('E:\zhec umich Drive\2021-10-01 Mg4Al_m1 insitu SEM-DIC\SEM Data\RC','path to rc');
+pathSE = uigetdir('E:\zhec umich Drive\2021-10-01 Mg4Al_m1 insitu SEM-DIC\SEM Data\SE','path to se');
 f1 = 'Mg4Al_s';
 f2 = '_';
 FORMAT = '.mat';    % or '.tif'

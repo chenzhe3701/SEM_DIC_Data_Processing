@@ -28,8 +28,8 @@
 DRAWFIGURE = 0;
 
 % Path for images and dic data (dic data usually in the same folder as the images)
-path_DIC = uigetdir('E:\zhec umich Drive\2021-10-01 MgAl insitu SEM-DIC\SEM Data\SE','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
-path_target = uigetdir('E:\zhec umich Drive\2021-10-01 MgAl insitu SEM-DIC\SEM Data\stitched images','select a target folder to hold the stitched images and translation data');
+path_DIC = uigetdir('E:\zhec umich Drive\2021-10-01 Mg4Al_m1 insitu SEM-DIC\SEM Data\SE','Select parent folder, which contains subfolders, each containing cropped images at an elongation');
+path_target = uigetdir('E:\zhec umich Drive\2021-10-01 Mg4Al_m1 insitu SEM-DIC\SEM Data\stitched images','select a target folder to hold the stitched images and translation data');
 
 % Sub folder name: [subFolderNamePrefix_1,iE], 
 % e.g., 20170430_ts5Al_02_test_e0 

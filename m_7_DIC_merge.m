@@ -36,7 +36,7 @@
 % (3) If use the local method, you can also define a special sequence to
 % stitch each FOVs.
 
-[f,p] = uigetfile('E:\zhec umich Drive\2021-10-01 MgAl insitu SEM-DIC\SEM Data\stitched images\translations_searched_vertical_stop_0.mat','select translation');
+[f,p] = uigetfile('E:\zhec umich Drive\2021-10-01 Mg4Al_m1 insitu SEM-DIC\SEM Data\stitched images\translations_searched_vertical_stop_0.mat','select translation');
 load([p,f]);    % load translation data
 iE_ref = 0;    % elongation number for reference images, default=0
 
@@ -92,8 +92,8 @@ end
 % e.g., 20170409_ts5Al_01_e4_r0c0
 f1 = 'Mg4Al_s'; f2='_';
 
-directory_s = uigetdir('E:\zhec umich Drive\2021-10-01 MgAl insitu SEM-DIC\SEM Data\All','choose a single directory that directly contains all the DIC mat files');
-directory_n = uigetdir('E:\zhec umich Drive\2021-10-01 MgAl insitu SEM-DIC\SEM Data\stitched DIC','choose the new/destination directory');
+directory_s = uigetdir('E:\zhec umich Drive\2021-10-01 Mg4Al_m1 insitu SEM-DIC\SEM Data\All','choose a single directory that directly contains all the DIC mat files');
+directory_n = uigetdir('E:\zhec umich Drive\2021-10-01 Mg4Al_m1 insitu SEM-DIC\SEM Data\stitched DIC','choose the new/destination directory');
 
 % Basically, this is the smallest x/y position in each FOV.
 % For example, with subset=21, step = 5, you could have x=12,17,..., so
